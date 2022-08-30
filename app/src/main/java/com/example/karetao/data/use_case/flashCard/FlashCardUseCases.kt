@@ -1,4 +1,4 @@
-package com.example.karetao.data.use_case
+package com.example.karetao.data.use_case.flashCard
 
 data class FlashCardUseCases(
     val getFlashCards: GetFlashCardsUseCase,

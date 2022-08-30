@@ -1,6 +1,6 @@
 package com.example.karetao.presentation.flashcards
 
-import com.example.karetao.data.use_case.FlashCardOrderType
+import com.example.karetao.data.use_case.flashCard.FlashCardOrderType
 import com.example.karetao.model.FlashCard
 
 sealed class FlashCardsEvent {

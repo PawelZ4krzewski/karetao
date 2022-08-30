@@ -18,7 +18,7 @@ class FlashCardRepository constructor(private val dao: FlashCardDao) {
         dao.insertFlashCards(flashCard)
     }
 
-    suspend fun  deleeteFlashCards(flashCard: FlashCard){
+    suspend fun  deleteFlashCards(flashCard: FlashCard){
         dao.deleteFlashCards(flashCard)
     }
 }

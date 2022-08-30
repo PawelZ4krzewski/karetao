@@ -2,7 +2,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.karetao.data.use_case.FlashCardOrderType
+import com.example.karetao.data.use_case.flashCard.FlashCardOrderType
 import com.example.karetao.data.use_case.OrderType
 import com.example.karetao.presentation.flashcards.components.DefaultRadioButton
 
