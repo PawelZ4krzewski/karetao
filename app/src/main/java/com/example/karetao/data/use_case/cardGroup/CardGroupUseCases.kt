@@ -8,6 +8,6 @@ import com.example.karetao.data.use_case.flashCard.GetFlashCardsUseCase
 data class CardGroupUseCases(
     val getCardGroup: GetCardGroupUseCase,
     val getCardGroups: GetCardGroupsUseCase,
-    val deleteFlashCard: DeleteFlashCard,
-    val addFlashCard: AddFlashCard
+    val deleteCardGroup: DeleteCardGroup,
+    val addCardGroup: AddCardGroup
 )

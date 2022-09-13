@@ -11,7 +11,7 @@ class GetCardGroupsUseCase(
 ) {
 
     operator fun invoke(
-        cardGroupOrderType: CardGroupOrderType = CardGroupOrderType.groupName(OrderType.Descending)
+        cardGroupOrderType: CardGroupOrderType = CardGroupOrderType.GroupName(OrderType.Descending)
     ): Flow<List<CardGroup>> {
         return repository.getCardGroups().map{ cardGroups ->
             when(cardGroupOrderType.orderType){
