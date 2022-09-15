@@ -2,7 +2,6 @@ package com.example.karetao.data.DAO
 
 import androidx.room.*
 import com.example.karetao.model.CardGroup
-import com.example.karetao.model.FlashCard
 import kotlinx.coroutines.flow.Flow
 
 

@@ -8,12 +8,14 @@ import com.example.karetao.data.use_case.cardGroup.CardGroupUseCases
 import com.example.karetao.model.CardGroup
 import androidx.lifecycle.viewModelScope
 import com.example.karetao.data.use_case.OrderType
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class CardGroupViewModel @Inject constructor(
     private val cardGroupUseCases: CardGroupUseCases
 ): ViewModel(){

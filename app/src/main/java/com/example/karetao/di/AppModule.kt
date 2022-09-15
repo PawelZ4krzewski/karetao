@@ -5,7 +5,9 @@ import androidx.room.Room
 import com.example.karetao.data.database.AppDatabase
 import com.example.karetao.data.repository.CardGroupRepository
 import com.example.karetao.data.repository.FlashCardRepository
+import com.example.karetao.data.use_case.cardGroup.*
 import com.example.karetao.data.use_case.flashCard.*
+import com.example.karetao.model.CardGroup
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,5 +49,16 @@ object AppModule {
     @Singleton
     fun provideCardGroupRepository(db: AppDatabase): CardGroupRepository{
         return CardGroupRepository(db.cardGroupDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCardGroupUseCase(repository: CardGroupRepository): CardGroupUseCases{
+        return CardGroupUseCases(
+            getCardGroups = GetCardGroupsUseCase(repository),
+            deleteCardGroup = DeleteCardGroup(repository),
+            addCardGroup = AddCardGroup(repository),
+            getCardGroup = GetCardGroupUseCase(repository)
+        )
     }
 }

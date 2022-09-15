@@ -6,6 +6,10 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "cardGroup")
 data class CardGroup(
     @PrimaryKey(autoGenerate = true)
-    val groupId: Int,
-    val groupName: String
+    val groupId: Int? = null,
+    val groupName: String,
+    val description: String
 )
+
+class InvalidCardGroupException(message: String): Exception(message)
+

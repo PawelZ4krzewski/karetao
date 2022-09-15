@@ -1,4 +1,5 @@
-package com.example.karetao.presentation.add_edit_flashcard
+package com.example.karetao.presentation.add_edit_cardgroup
+
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -15,42 +16,42 @@ import com.example.karetao.presentation.add_edit_flashcard.components.Transparen
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun AddEditFlashCardScreen(
+fun AddEditCardGroupScreen(
     navController: NavController,
-    viewModel: AddEditFlashCardViewModel = hiltViewModel()
+    viewModel: AddEditCardGroupViewModel = hiltViewModel()
 ) {
-    val questionState = viewModel.flashCardQuestion.value
-    val answerState = viewModel.flashCardAnswer.value
+    val groupNameState = viewModel.cardGroupName.value
+    val descriptionState = viewModel.cardGroupDescription.value
 
     val scaffoldState = rememberScaffoldState()
 
     val scope = rememberCoroutineScope()
-    
+
     LaunchedEffect(key1 = true){
         viewModel.eventFlow.collectLatest { event ->
             when(event){
-               is AddEditFlashCardViewModel.UiEvent.ShowSnackbar -> {
+                is AddEditCardGroupViewModel.UiEvent.ShowSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message
                     )
-               }
-               is AddEditFlashCardViewModel.UiEvent.SaveFlashCard -> {
+                }
+                is AddEditCardGroupViewModel.UiEvent.SaveCardGroup -> {
                     navController.navigateUp()
-               }
+                }
             }
         }
     }
-    
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                viewModel.onEvent(AddEditFlashCardEvent.SaveFlashCard)
+                viewModel.onEvent(AddEditCardGroupEvent.SaveCardGroup)
             },
-            backgroundColor = MaterialTheme.colors.primary
+                backgroundColor = MaterialTheme.colors.primary
             ) {
                 Icon(
                     imageVector = Icons.Default.Done,
-                    contentDescription = "Save flashcard"
+                    contentDescription = "Save cardgroup"
                 )
             }
         },
@@ -62,31 +63,31 @@ fun AddEditFlashCardScreen(
                 .padding(16.dp)
         ) {
             TransparentHintTextField(
-                text = questionState.text,
-                hint = questionState.hint,
+                text = groupNameState.text,
+                hint = groupNameState.hint,
                 onValueChange = {
-                      viewModel.onEvent(AddEditFlashCardEvent.EnteredQuestion(it))          
+                    viewModel.onEvent(AddEditCardGroupEvent.EnteredGroupName(it))
                 },
                 onFocusChange = {
-                    viewModel.onEvent(AddEditFlashCardEvent.ChangeQuestionFocus(it))
+                    viewModel.onEvent(AddEditCardGroupEvent.ChangeGroupNameFocus(it))
                 },
-                isHintVisible = questionState.isHintVisible,
+                isHintVisible = groupNameState.isHintVisible,
                 singleLine =  true,
                 textStyle = MaterialTheme.typography.h5
             )
-            
+
             Spacer( modifier = Modifier.height(16.dp))
 
             TransparentHintTextField(
-                text = answerState.text,
-                hint = answerState.hint,
+                text = descriptionState.text,
+                hint = descriptionState.hint,
                 onValueChange = {
-                    viewModel.onEvent(AddEditFlashCardEvent.EnteredAnswer(it))
+                    viewModel.onEvent(AddEditCardGroupEvent.EnteredDescription(it))
                 },
                 onFocusChange = {
-                    viewModel.onEvent(AddEditFlashCardEvent.ChangeAnswerFocus(it))
+                    viewModel.onEvent(AddEditCardGroupEvent.ChangeDescriptionFocus(it))
                 },
-                isHintVisible = answerState.isHintVisible,
+                isHintVisible = descriptionState.isHintVisible,
                 singleLine =  true,
                 textStyle = MaterialTheme.typography.h5
             )
