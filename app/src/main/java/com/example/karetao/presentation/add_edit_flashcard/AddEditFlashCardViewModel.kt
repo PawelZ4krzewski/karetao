@@ -35,6 +35,7 @@ class AddEditFlashCardViewModel @Inject constructor(
     val eventFlow = _eventFlow.asSharedFlow()
 
     private var currentFlashCardId: Int? = null
+    private var currentGroupId: Int? = null
 
     init {
         savedStateHandle.get<Int>("cardId")?.let { cardId ->
@@ -54,6 +55,14 @@ class AddEditFlashCardViewModel @Inject constructor(
                         )
                     }
                 }
+            }
+        }
+
+        savedStateHandle.get<Int>("groupId")?.let { groupId ->
+
+            Log.d("Add flashcard GroupID",groupId.toString())
+            if(groupId != -1){
+                currentGroupId = groupId
             }
 
         }
@@ -87,7 +96,7 @@ class AddEditFlashCardViewModel @Inject constructor(
                         flashCardUseCases.addFlashCard(
                             FlashCard(
                                 cardId = currentFlashCardId,
-                                groupId = 1,
+                                groupId = currentGroupId,
                                 question = flashCardQuestion.value.text,
                                 answer = flashCardAnswer.value.text
                             )

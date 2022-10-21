@@ -46,19 +46,7 @@ class MainActivity : ComponentActivity() {
                         composable(route = Screen.CardGroupScreen.route) {
                             CardGroupsScreen(navController = navController)
                         }
-//                        composable(
-//                            route = Screen.AddEditFlashCardScreen.route + "?cardId={cardId}",
-//                            arguments = listOf(
-//                                navArgument(
-//                                    name = "cardId"
-//                                ){
-//                                    type = NavType.IntType
-//                                    defaultValue = -1
-//                                }
-//                            )
-//                        ){
-//                            AddEditFlashCardScreen(navController = navController)
-//                        }
+
                         composable(
                             route = Screen.AddEditCardGroupScreen.route + "?groupId={groupId}",
                             arguments = listOf(
@@ -71,6 +59,40 @@ class MainActivity : ComponentActivity() {
                             )
                         ){
                             AddEditCardGroupScreen(navController = navController)
+                        }
+
+                        composable(
+                            route = Screen.FlashCardScreen.route + "?groupId={groupId}",
+                            arguments = listOf(
+                                navArgument(
+                                    name = "groupId"
+                                ){
+                                    type = NavType.IntType
+                                    defaultValue = -1
+                                }
+                            )
+                        ){
+                            FlashCardsScreen(navController = navController)
+                        }
+
+                        composable(
+                            route = Screen.AddEditFlashCardScreen.route + "?cardId={cardId}&groupId={groupId}",
+                            arguments = listOf(
+                                navArgument(
+                                    name = "cardId",
+                                ){
+                                    type = NavType.IntType
+                                    defaultValue = -1
+                                },
+                                navArgument(
+                                    name = "groupId",
+                                ){
+                                    type = NavType.IntType
+                                    defaultValue = -1
+                                }
+                            )
+                        ){
+                            AddEditFlashCardScreen(navController = navController)
                         }
                     }
                 }

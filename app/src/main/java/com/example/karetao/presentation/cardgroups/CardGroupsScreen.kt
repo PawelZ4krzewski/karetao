@@ -93,7 +93,7 @@ fun CardGroupsScreen(
                             .clickable {
                                 Log.d("Card Group",cardGroup.toString())
                                 navController.navigate(
-                                    Screen.AddEditCardGroupScreen.route+"?groupId=${cardGroup.groupId}"
+                                    Screen.FlashCardScreen.route+"?groupId=${cardGroup.groupId}"
                                 )
                             }
                     )

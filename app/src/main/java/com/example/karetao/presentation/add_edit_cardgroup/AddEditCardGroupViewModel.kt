@@ -48,7 +48,7 @@ class AddEditCardGroupViewModel @Inject constructor(
 
     init {
         savedStateHandle.get<Int>("groupId")?.let { groupId ->
-            Log.d("Add cardgroup",groupId.toString())
+            Log.d("Add cardgroup:","Get Argument groupId: " + groupId.toString())
             if(groupId != -1){
                 viewModelScope.launch {
                     cardGroupUseCase.getCardGroup(groupId)?.also {
@@ -101,7 +101,7 @@ class AddEditCardGroupViewModel @Inject constructor(
                                 description = cardGroupDescription.value.text
                             )
                         )
-                        Log.d("Add cardGroup", currentCardGroupId.toString())
+                        Log.d("Add cardGroup", "Added CardGroupId: " + currentCardGroupId.toString())
                         _eventFlow.emit(UiEvent.SaveCardGroup)
                     }catch(e: InvalidCardGroupException){
                         _eventFlow.emit(

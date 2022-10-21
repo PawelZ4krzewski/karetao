@@ -1,7 +1,9 @@
 package com.example.karetao.presentation.flashcards
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.karetao.data.use_case.flashCard.FlashCardOrderType
@@ -17,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FlashCardViewModel @Inject constructor(
-    private val flashCardUseCases: FlashCardUseCases
+    private val flashCardUseCases: FlashCardUseCases,
+    savedStateHandle: SavedStateHandle
 ): ViewModel(){
 
     private val _state = mutableStateOf(FlashCardState())
@@ -28,7 +31,15 @@ class FlashCardViewModel @Inject constructor(
     private var getFlashCardsJob: Job? = null
 
     init {
-        getFlashCards(FlashCardOrderType.Question(OrderType.Ascending))
+//        getFlashCards(FlashCardOrderType.Question(OrderType.Ascending))
+        savedStateHandle.get<Int>("groupId")?.let { groupId ->
+            Log.d("FlashCardScreen", "GroupId $groupId")
+            getFlashCardsFromSameGroup(
+                FlashCardOrderType.Question(OrderType.Ascending),
+                groupId
+            )
+        }
+
     }
 
     fun onEvent(event: FlashCardsEvent){
@@ -39,7 +50,7 @@ class FlashCardViewModel @Inject constructor(
                 ){
                     return
                 }
-                getFlashCards(event.flashCardOrder)
+                getFlashCardsFromSameGroup(event.flashCardOrder, state.value.groupId)
             }
             is FlashCardsEvent.DeleteFlashCard -> {
                 viewModelScope.launch {
@@ -68,9 +79,23 @@ class FlashCardViewModel @Inject constructor(
                 _state.value = state.value.copy(
                     flashCards = flashCards,
                     flashCardOrder = flashCardOrder
-
                 )
             }
             .launchIn(viewModelScope)
+    }
+
+    private fun getFlashCardsFromSameGroup(flashCardOrder: FlashCardOrderType, groupId:Int){
+        getFlashCardsJob?.cancel()
+
+        getFlashCardsJob  = flashCardUseCases.getFlashCardsFromSameGroup(groupId, flashCardOrder)
+            .onEach { flashCards ->
+                _state.value = state.value.copy(
+                    groupId = groupId,
+                    flashCards = flashCards,
+                    flashCardOrder = flashCardOrder
+                )
+            }
+            .launchIn(viewModelScope)
+
     }
 }

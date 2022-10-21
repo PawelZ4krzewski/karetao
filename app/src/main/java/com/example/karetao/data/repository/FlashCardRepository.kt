@@ -10,6 +10,10 @@ class FlashCardRepository constructor(private val dao: FlashCardDao) {
         return dao.getFlashCards()
     }
 
+    fun getFlashCardsFromSameGroup(id: Int): Flow<List<FlashCard>> {
+        return dao.getFlashCardsFromSameGroup(id)
+    }
+
     suspend fun getFlashCardById(id: Int): FlashCard? {
         return dao.getFlashCardsById(id)
     }

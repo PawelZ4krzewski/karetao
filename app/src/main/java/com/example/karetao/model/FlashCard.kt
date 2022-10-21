@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey
 )
 data class FlashCard(
     @PrimaryKey val cardId: Int? = null,
-    val groupId: Int,
+    val groupId: Int? = null,
     val question: String,
     val answer: String
 

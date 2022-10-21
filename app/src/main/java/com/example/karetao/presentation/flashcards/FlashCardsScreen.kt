@@ -35,7 +35,7 @@ fun FlashCardsScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                navController.navigate(Screen.AddEditFlashCardScreen.route)
+                navController.navigate(Screen.AddEditFlashCardScreen.route+"?groupId=${state.groupId}")
             },
             backgroundColor = MaterialTheme.colors.primary
             ) {
@@ -93,7 +93,7 @@ fun FlashCardsScreen(
                             .clickable {
                                 Log.d("FlashCard",flashCard.toString())
                                 navController.navigate(
-                                    Screen.AddEditFlashCardScreen.route+"?cardId=${flashCard.cardId}"
+                                    Screen.AddEditFlashCardScreen.route+"?cardId=${flashCard.cardId}&groupId=${flashCard.groupId}"
                                 )
                             }
                     )

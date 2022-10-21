@@ -7,5 +7,6 @@ import com.example.karetao.model.FlashCard
 data class FlashCardState(
     val flashCards: List<FlashCard> = emptyList(),
     val flashCardOrder: FlashCardOrderType = FlashCardOrderType.Question(OrderType.Ascending),
+    val groupId: Int = -1,
     val isOrderSectionVisible: Boolean = false
 )
