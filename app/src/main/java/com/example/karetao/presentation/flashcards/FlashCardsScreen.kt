@@ -21,6 +21,7 @@ import androidx.navigation.NavController
 import com.example.karetao.model.FlashCard
 import com.example.karetao.presentation.flashcards.components.FlashCardItem
 import com.example.karetao.presentation.util.Screen
+import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
 @Composable
@@ -95,10 +96,24 @@ fun FlashCardsScreen(
                                 navController.navigate(
                                     Screen.AddEditFlashCardScreen.route+"?cardId=${flashCard.cardId}&groupId=${flashCard.groupId}"
                                 )
+                            },
+                        onDeleteClick = {
+                            viewModel.onEvent(FlashCardsEvent.DeleteFlashCard(flashCard))
+                            scope.launch {
+                                val result = scaffoldState.snackbarHostState.showSnackbar(
+                                    message = "Flashcard deleted",
+                                    actionLabel = "Undo"
+                                )
+
+                                if(result == SnackbarResult.ActionPerformed) {
+                                    viewModel.onEvent(FlashCardsEvent.RestoreFlashCard)
+                                }
                             }
+                        }
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

@@ -2,8 +2,12 @@ package com.example.karetao.presentation.flashcards.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,7 +21,8 @@ import com.example.karetao.model.CardGroup
 fun CardGroupItem(
     cardGroup: CardGroup,
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 10.dp
+    cornerRadius: Dp = 10.dp,
+    onDeleteClick: () -> Unit
 ){
     Box(modifier = modifier
     ){
@@ -42,6 +47,13 @@ fun CardGroupItem(
                 textAlign = TextAlign.Center,
                 overflow = TextOverflow.Ellipsis
             )
+            IconButton(
+                onClick = onDeleteClick
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete Card Group")
+            }
         }
     }
 }

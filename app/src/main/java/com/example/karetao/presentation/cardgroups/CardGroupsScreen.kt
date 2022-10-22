@@ -19,8 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.karetao.model.CardGroup
+import com.example.karetao.presentation.flashcards.FlashCardsEvent
 import com.example.karetao.presentation.flashcards.components.CardGroupItem
 import com.example.karetao.presentation.util.Screen
+import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
 @Composable
@@ -95,7 +97,20 @@ fun CardGroupsScreen(
                                 navController.navigate(
                                     Screen.FlashCardScreen.route+"?groupId=${cardGroup.groupId}"
                                 )
+                            },
+                        onDeleteClick = {
+                            viewModel.onEvent(CardGroupEvent.DeleteCardGroup(cardGroup))
+                            scope.launch {
+                                val result = scaffoldState.snackbarHostState.showSnackbar(
+                                    message = "Flashcard deleted",
+                                    actionLabel = "Undo"
+                                )
+
+                                if(result == SnackbarResult.ActionPerformed) {
+                                    viewModel.onEvent(CardGroupEvent.RestoreCardGroups)
+                                }
                             }
+                        }
                     )
                 }
             }
