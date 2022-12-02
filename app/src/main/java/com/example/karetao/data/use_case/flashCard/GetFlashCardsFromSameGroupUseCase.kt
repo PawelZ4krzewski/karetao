@@ -6,7 +6,7 @@ import com.example.karetao.model.FlashCard
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class GetFlashCardsFromSameGroup (
+class GetFlashCardsFromSameGroupUseCase (
     private val repository: FlashCardRepository
     ) {
         operator fun invoke(

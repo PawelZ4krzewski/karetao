@@ -1,6 +1,7 @@
 package com.example.karetao.presentation.add_edit_cardgroup
 
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -15,6 +16,7 @@ import androidx.navigation.NavController
 import com.example.karetao.presentation.add_edit_flashcard.components.TransparentHintTextField
 import kotlinx.coroutines.flow.collectLatest
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AddEditCardGroupScreen(
     navController: NavController,

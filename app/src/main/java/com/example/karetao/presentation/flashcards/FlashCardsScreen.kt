@@ -1,8 +1,10 @@
 package com.example.karetao.presentation.flashcards
 
 import OrderSection
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,14 +17,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.karetao.model.FlashCard
 import com.example.karetao.presentation.flashcards.components.FlashCardItem
 import com.example.karetao.presentation.util.Screen
+import com.example.karetao.ui.theme.Blue
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalAnimationApi
 @Composable
 fun FlashCardsScreen(
@@ -35,8 +40,11 @@ fun FlashCardsScreen(
     
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                navController.navigate(Screen.AddEditFlashCardScreen.route+"?groupId=${state.groupId}")
+            FloatingActionButton(
+                onClick = {
+                Log.d("FlashCard",state.flashCards.toString())
+                navController.navigate(Screen.LearnFlashCardsScreen.route+"?groupId=${state.groupId}")
+//                navController.navigate(Screen.AddEditFlashCardScreen.route+"?groupId=${state.groupId}")
             },
             backgroundColor = MaterialTheme.colors.primary
             ) {
@@ -56,7 +64,7 @@ fun FlashCardsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Text(
-                    text = "Your flashcards",
+                    text = state.groupName,
                     style = MaterialTheme.typography.h4
                 )
                 IconButton(onClick = {
@@ -91,6 +99,7 @@ fun FlashCardsScreen(
                         flashCard = flashCard,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(10.dp, 5.dp)
                             .clickable {
                                 Log.d("FlashCard",flashCard.toString())
                                 navController.navigate(

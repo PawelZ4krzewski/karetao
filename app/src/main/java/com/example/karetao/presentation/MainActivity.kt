@@ -1,8 +1,10 @@
 package com.example.karetao.presentation
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
@@ -16,6 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.karetao.presentation.LearnFlashCards.LearnFlashCardsScreen
 import com.example.karetao.presentation.add_edit_cardgroup.AddEditCardGroupScreen
 import com.example.karetao.presentation.add_edit_flashcard.AddEditFlashCardScreen
 import com.example.karetao.presentation.cardgroups.CardGroupsScreen
@@ -26,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,17 +66,36 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            route = Screen.FlashCardScreen.route + "?groupId={groupId}",
+                            route = Screen.FlashCardScreen.route + "?groupId={groupId}&groupName={groupName}",
                             arguments = listOf(
                                 navArgument(
                                     name = "groupId"
                                 ){
                                     type = NavType.IntType
                                     defaultValue = -1
+                                },
+                                navArgument(
+                                    name = "groupName"
+                                ){
+                                    type = NavType.StringType
+                                    defaultValue = "Flash Card Group Name"
                                 }
                             )
                         ){
                             FlashCardsScreen(navController = navController)
+                        }
+
+                        composable(
+                            route = Screen.LearnFlashCardsScreen.route + "?groupId={groupId}",
+                            arguments = listOf(
+                                navArgument(
+                                    name = "groupId"
+                                ){
+                                    type = NavType.IntType
+                                    defaultValue = -1
+                            })
+                        ){
+                            LearnFlashCardsScreen(navController = navController)
                         }
 
                         composable(

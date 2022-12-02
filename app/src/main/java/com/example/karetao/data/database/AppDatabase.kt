@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.karetao.data.DAO.CardGroupDao
 import com.example.karetao.data.DAO.FlashCardDao
+import com.example.karetao.data.DAO.UserCardDao
 import com.example.karetao.model.*
 
 @Database(
@@ -17,6 +18,7 @@ abstract class AppDatabase: RoomDatabase() {
 //    abstract val userDao: UserDao
     abstract val flashCardDao: FlashCardDao
     abstract val cardGroupDao: CardGroupDao
+    abstract val userCardDao: UserCardDao
 
     companion object{
         const val DATABASE_NAME = "flashCard_database"

@@ -5,5 +5,5 @@ data class FlashCardUseCases(
     val deleteFlashCard: DeleteFlashCard,
     val addFlashCard: AddFlashCard,
     val getFlashCard: GetFlashCardUseCase,
-    val getFlashCardsFromSameGroup: GetFlashCardsFromSameGroup
+    val getFlashCardsFromSameGroupUseCase: GetFlashCardsFromSameGroupUseCase
 )

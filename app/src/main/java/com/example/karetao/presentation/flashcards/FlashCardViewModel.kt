@@ -40,6 +40,13 @@ class FlashCardViewModel @Inject constructor(
             )
         }
 
+        savedStateHandle.get<String>("groupName")?.let { groupName ->
+            Log.d("FlashCardScreen", "Group Name $groupName")
+            _state.value = state.value.copy(
+                groupName = groupName
+            )
+        }
+
     }
 
     fun onEvent(event: FlashCardsEvent){
@@ -87,7 +94,7 @@ class FlashCardViewModel @Inject constructor(
     private fun getFlashCardsFromSameGroup(flashCardOrder: FlashCardOrderType, groupId:Int){
         getFlashCardsJob?.cancel()
 
-        getFlashCardsJob  = flashCardUseCases.getFlashCardsFromSameGroup(groupId, flashCardOrder)
+        getFlashCardsJob  = flashCardUseCases.getFlashCardsFromSameGroupUseCase(groupId, flashCardOrder)
             .onEach { flashCards ->
                 _state.value = state.value.copy(
                     groupId = groupId,
@@ -96,6 +103,5 @@ class FlashCardViewModel @Inject constructor(
                 )
             }
             .launchIn(viewModelScope)
-
     }
 }

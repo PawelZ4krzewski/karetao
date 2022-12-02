@@ -5,4 +5,5 @@ sealed class Screen(val route: String){
     object FlashCardScreen: Screen("flashcard_screen")
     object AddEditFlashCardScreen: Screen("Add_edit_flashcard_screen")
     object AddEditCardGroupScreen: Screen("Add_edit_cardGroup_screen")
+    object LearnFlashCardsScreen: Screen("Learn_flashcard_screen")
 }

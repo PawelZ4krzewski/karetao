@@ -5,9 +5,10 @@ import androidx.room.Room
 import com.example.karetao.data.database.AppDatabase
 import com.example.karetao.data.repository.CardGroupRepository
 import com.example.karetao.data.repository.FlashCardRepository
+import com.example.karetao.data.repository.UserCardRepository
 import com.example.karetao.data.use_case.cardGroup.*
 import com.example.karetao.data.use_case.flashCard.*
-import com.example.karetao.model.CardGroup
+import com.example.karetao.data.use_case.userCard.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,7 +43,7 @@ object AppModule {
             deleteFlashCard = DeleteFlashCard(repository),
             addFlashCard = AddFlashCard(repository),
             getFlashCard = GetFlashCardUseCase(repository),
-            getFlashCardsFromSameGroup = GetFlashCardsFromSameGroup(repository)
+            getFlashCardsFromSameGroupUseCase = GetFlashCardsFromSameGroupUseCase(repository)
         )
     }
 
@@ -60,6 +61,23 @@ object AppModule {
             deleteCardGroup = DeleteCardGroup(repository),
             addCardGroup = AddCardGroup(repository),
             getCardGroup = GetCardGroupUseCase(repository)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserCardRepository(db: AppDatabase): UserCardRepository{
+        return UserCardRepository(db.userCardDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserGroupUseCase(repository: UserCardRepository): UserCardUseCases{
+        return UserCardUseCases(
+            getUserCard = GetUserCardUseCase(repository),
+            getUserCardFromSameUser = GetUserCardFromSameUserUseCase(repository),
+            insertUserCard = AddUserCard(repository),
+            deleteUserCard = DeleteUserCard(repository)
         )
     }
 }
