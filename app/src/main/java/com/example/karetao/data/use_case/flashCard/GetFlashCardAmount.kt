@@ -5,7 +5,7 @@ import com.example.karetao.model.FlashCard
 
 class GetFlashCardAmount(private val repository: FlashCardRepository) {
 
-    operator fun invoke(id: Int){
-        repository.getAmountOfFlashCard(id)
+    suspend operator fun invoke(id: Int): Int {
+        return repository.getAmountOfFlashCard(id)
     }
 }

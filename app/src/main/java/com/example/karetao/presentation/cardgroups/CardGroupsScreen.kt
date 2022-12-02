@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.karetao.model.CardGroup
+import com.example.karetao.model.CardGroupInformation
 import com.example.karetao.presentation.flashcards.FlashCardsEvent
 import com.example.karetao.presentation.flashcards.components.CardGroupItem
 import com.example.karetao.presentation.util.Screen
@@ -130,19 +131,19 @@ fun CardGroupsScreen(
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
                 LazyColumn(modifier = Modifier.fillMaxSize()){
-                    items(state.cardGroups){ cardGroup: CardGroup ->
+                    items(state.cardGroupsInformation){ cardGroupInformation: CardGroupInformation ->
                         CardGroupItem(
-                            cardGroup = cardGroup,
+                            cardGroupInformation = cardGroupInformation,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    Log.d("Card Group", cardGroup.toString())
+                                    Log.d("Card Group", cardGroupInformation.toString())
                                     navController.navigate(
-                                        Screen.FlashCardScreen.route + "?groupId=${cardGroup.groupId}&groupName=${cardGroup.groupName}"
+                                        Screen.FlashCardScreen.route + "?groupId=${cardGroupInformation.cardGroup.groupId}&groupName=${cardGroupInformation.cardGroup.groupName}"
                                     )
                                 },
                             onDeleteClick = {
-                                viewModel.onEvent(CardGroupEvent.DeleteCardGroup(cardGroup))
+                                viewModel.onEvent(CardGroupEvent.DeleteCardGroup(cardGroupInformation.cardGroup))
                                 scope.launch {
                                     val result = scaffoldState.snackbarHostState.showSnackbar(
                                         message = "Flashcard deleted",
@@ -160,7 +161,6 @@ fun CardGroupsScreen(
                             .fillMaxWidth()
                             .height(15.dp)
                         )
-
                     }
                 }
             }

@@ -21,12 +21,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.karetao.model.CardGroup
+import com.example.karetao.model.CardGroupInformation
 import com.example.karetao.ui.theme.White
 
 
 @Composable
 fun CardGroupItem(
-    cardGroup: CardGroup,
+    cardGroupInformation: CardGroupInformation,
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 10.dp,
     onDeleteClick: () -> Unit
@@ -43,7 +44,7 @@ fun CardGroupItem(
         ) {
             Text(
                 modifier = Modifier.weight(1F),
-                text = cardGroup.groupName,
+                text = cardGroupInformation.cardGroup.groupName,
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.colors.onSurface,
                 textAlign = TextAlign.Start,
@@ -51,7 +52,7 @@ fun CardGroupItem(
             )
             Text(
                 modifier = Modifier.weight(1F),
-                text = cardGroup.description,
+                text = cardGroupInformation.amountOfFlashCard.toString(),
                 style = MaterialTheme.typography.h5,
                 color = MaterialTheme.colors.onSurface,
                 textAlign = TextAlign.End,

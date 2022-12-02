@@ -1,5 +1,6 @@
 package com.example.karetao.presentation.cardgroups
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import com.example.karetao.model.CardGroup
 import androidx.lifecycle.viewModelScope
 import com.example.karetao.data.use_case.OrderType
 import com.example.karetao.data.use_case.flashCard.FlashCardUseCases
+import com.example.karetao.model.CardGroupInformation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -66,14 +68,23 @@ class CardGroupViewModel @Inject constructor(
     }
 
     private fun getCardGroups(cardGroupOrder: CardGroupOrderType){
+        val cardGroupInformation  = mutableListOf<CardGroupInformation>()
+        var flashCardAmount = 0;
         getCardGroupsJob?.cancel()
         getCardGroupsJob = cardGroupUseCases.getCardGroups(cardGroupOrder)
             .onEach { cardGroups ->
+                cardGroups.onEach {
+                    flashCardAmount = flashCardUseCases.getFlashCardAmount(it.groupId!!)
+                    cardGroupInformation.add(CardGroupInformation(cardGroup = it, flashCardAmount))
+                }
                 _state.value = state.value.copy(
-                    cardGroups = cardGroups,
+                    cardGroupsInformation = cardGroupInformation,
                     cardGroupOrder = cardGroupOrder
                 )
             }
            .launchIn(viewModelScope)
+
+
     }
+
 }

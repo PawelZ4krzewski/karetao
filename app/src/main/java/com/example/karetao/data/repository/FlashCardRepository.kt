@@ -14,7 +14,7 @@ class FlashCardRepository constructor(private val dao: FlashCardDao) {
         return dao.getFlashCardsFromSameGroup(id)
     }
 
-    fun getAmountOfFlashCard(id: Int): Int {
+    suspend fun getAmountOfFlashCard(id: Int): Int {
         return dao.getAmountOfFlashCard(id)
     }
 
