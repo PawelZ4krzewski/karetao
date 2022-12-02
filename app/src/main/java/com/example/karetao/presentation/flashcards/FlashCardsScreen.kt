@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -18,6 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,6 +33,7 @@ import com.example.karetao.ui.theme.Blue
 import com.example.karetao.ui.theme.DarkBlue
 import com.example.karetao.ui.theme.White
 import kotlinx.coroutines.launch
+import org.intellij.lang.annotations.JdkConstants
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalAnimationApi
@@ -44,15 +48,40 @@ fun FlashCardsScreen(
     
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                Log.d("FlashCard",state.flashCards.toString())
-                navController.navigate(Screen.LearnFlashCardsScreen.route+"?groupId=${state.groupId}")
-//                navController.navigate(Screen.AddEditFlashCardScreen.route+"?groupId=${state.groupId}")
-            },
-            backgroundColor = DarkBlue
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add flashcard")
+
+                FloatingActionButton(
+                    onClick = {
+                        Log.d("FlashCard",state.flashCards.toString())
+                        navController.navigate(Screen.LearnFlashCardsScreen.route+"?groupId=${state.groupId}")
+                    },
+                    backgroundColor = DarkBlue,
+                    shape = RoundedCornerShape( 20.dp),
+                    modifier = Modifier
+                ) {
+                    Text(
+                        text = "LEARN",
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(50.dp, 15.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(60.dp))
+
+                FloatingActionButton(
+                    onClick = {
+                    Log.d("FlashCard",state.flashCards.toString())
+    //                navController.navigate(Screen.LearnFlashCardsScreen.route+"?groupId=${state.groupId}")
+                    navController.navigate(Screen.AddEditFlashCardScreen.route+"?groupId=${state.groupId}")
+                },
+                backgroundColor = DarkBlue
+                ) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add flashcard")
+                }
             }
         },
         scaffoldState = scaffoldState
