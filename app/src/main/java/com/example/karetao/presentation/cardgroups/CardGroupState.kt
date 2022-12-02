@@ -7,6 +7,7 @@ import com.example.karetao.model.CardGroup
 data class CardGroupState (
     val cardGroups: List<CardGroup> = emptyList(),
     val cardGroupOrder: CardGroupOrderType = CardGroupOrderType.GroupName(OrderType.Ascending),
-    val isOrderSectionVisible: Boolean = false
+    val isOrderSectionVisible: Boolean = false,
+    val flashCardAmount: Int = -1
 
 )

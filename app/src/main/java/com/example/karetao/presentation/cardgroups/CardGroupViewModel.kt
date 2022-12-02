@@ -8,6 +8,7 @@ import com.example.karetao.data.use_case.cardGroup.CardGroupUseCases
 import com.example.karetao.model.CardGroup
 import androidx.lifecycle.viewModelScope
 import com.example.karetao.data.use_case.OrderType
+import com.example.karetao.data.use_case.flashCard.FlashCardUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CardGroupViewModel @Inject constructor(
-    private val cardGroupUseCases: CardGroupUseCases
+    private val cardGroupUseCases: CardGroupUseCases,
+    private val flashCardUseCases: FlashCardUseCases
 ): ViewModel(){
 
     private val _state = mutableStateOf(CardGroupState())

@@ -4,6 +4,7 @@ import OrderSectionCardGroup
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -24,6 +26,8 @@ import com.example.karetao.model.CardGroup
 import com.example.karetao.presentation.flashcards.FlashCardsEvent
 import com.example.karetao.presentation.flashcards.components.CardGroupItem
 import com.example.karetao.presentation.util.Screen
+import com.example.karetao.ui.theme.DarkBlue
+import com.example.karetao.ui.theme.White
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -42,7 +46,7 @@ fun CardGroupsScreen(
             FloatingActionButton(onClick = {
                 navController.navigate(Screen.AddEditCardGroupScreen.route)
             },
-                backgroundColor = MaterialTheme.colors.primary
+                backgroundColor = DarkBlue
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add card group")
             }
@@ -52,75 +56,112 @@ fun CardGroupsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .background(DarkBlue)
+                    .fillMaxWidth()
             ){
-                Text(
-                    text = "Your Card Groups",
-                    style = MaterialTheme.typography.h4
-                )
-                IconButton(onClick = {
-                    viewModel.onEvent(CardGroupEvent.ToggleOrderSection)
-                }) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Sort"
-                    )
-
-                }
-            }
-            AnimatedVisibility(
-                visible = state.isOrderSectionVisible,
-                enter = fadeIn() + slideInVertically(),
-                exit = fadeOut() + slideOutVertically()
-            ) {
-                OrderSectionCardGroup(
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    cardGroupOrderType = state.cardGroupOrder,
-                    onOrderChange = {
-                        viewModel.onEvent(CardGroupEvent.Order(it))
+                        .padding(5.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    IconButton(
+                        onClick = {
+                            Log.d("BackIcon", "I will back!")
+                        },
+                        modifier = Modifier.width(50.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = White,
+                            modifier = Modifier.size(30.dp)
+                        )
                     }
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            LazyColumn(modifier = Modifier.fillMaxSize()){
-                items(state.cardGroups){ cardGroup: CardGroup ->
-                    CardGroupItem(
-                        cardGroup = cardGroup,
+                    IconButton(
+                        onClick = {
+                            viewModel.onEvent(CardGroupEvent.ToggleOrderSection)
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Sort",
+                            tint = White,
+                            modifier = Modifier.size(30.dp)
+                        )
+                    }
+                }
+                Box(modifier = Modifier
+                    .padding(30.dp, 10.dp, 30.dp, 20.dp)
+                    .fillMaxWidth()
+                ){
+                    Text(
+                        text = "Yours CardGroups",
+                        style = MaterialTheme.typography.h3,
+                        color = White
+                    )
+                }
+
+
+                AnimatedVisibility(
+                    visible = state.isOrderSectionVisible,
+                    enter = fadeIn() + slideInVertically(),
+                    exit = fadeOut() + slideOutVertically()
+                ) {
+                    OrderSectionCardGroup(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
-                                Log.d("Card Group", cardGroup.toString())
-                                navController.navigate(
-                                    Screen.FlashCardScreen.route + "?groupId=${cardGroup.groupId}&groupName=${cardGroup.groupName}"
-                                )
-                            },
-                        onDeleteClick = {
-                            viewModel.onEvent(CardGroupEvent.DeleteCardGroup(cardGroup))
-                            scope.launch {
-                                val result = scaffoldState.snackbarHostState.showSnackbar(
-                                    message = "Flashcard deleted",
-                                    actionLabel = "Undo"
-                                )
-
-                                if(result == SnackbarResult.ActionPerformed) {
-                                    viewModel.onEvent(CardGroupEvent.RestoreCardGroups)
-                                }
-                            }
+                            .padding(vertical = 16.dp),
+                        cardGroupOrderType = state.cardGroupOrder,
+                        onOrderChange = {
+                            viewModel.onEvent(CardGroupEvent.Order(it))
                         }
                     )
+                }
+            }
 
-                    Spacer(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(15.dp)
-                    )
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+                LazyColumn(modifier = Modifier.fillMaxSize()){
+                    items(state.cardGroups){ cardGroup: CardGroup ->
+                        CardGroupItem(
+                            cardGroup = cardGroup,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    Log.d("Card Group", cardGroup.toString())
+                                    navController.navigate(
+                                        Screen.FlashCardScreen.route + "?groupId=${cardGroup.groupId}&groupName=${cardGroup.groupName}"
+                                    )
+                                },
+                            onDeleteClick = {
+                                viewModel.onEvent(CardGroupEvent.DeleteCardGroup(cardGroup))
+                                scope.launch {
+                                    val result = scaffoldState.snackbarHostState.showSnackbar(
+                                        message = "Flashcard deleted",
+                                        actionLabel = "Undo"
+                                    )
 
+                                    if(result == SnackbarResult.ActionPerformed) {
+                                        viewModel.onEvent(CardGroupEvent.RestoreCardGroups)
+                                    }
+                                }
+                            }
+                        )
+
+                        Spacer(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(15.dp)
+                        )
+
+                    }
                 }
             }
         }

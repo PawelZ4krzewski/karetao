@@ -20,6 +20,7 @@ fun OrderSectionCardGroup(
         ){
             DefaultRadioButton(
                 text = "Ascending",
+
                 selected = cardGroupOrderType.orderType is OrderType.Ascending,
                 onSelect = {
                     onOrderChange(cardGroupOrderType.copy(OrderType.Ascending))

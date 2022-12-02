@@ -14,6 +14,9 @@ interface FlashCardDao {
     @Query("SELECT * From flashCard WHERE groupId = :id")
     fun getFlashCardsFromSameGroup(id: Int): Flow<List<FlashCard>>
 
+    @Query("SELECT COUNT(*) From flashCard WHERE groupId = :id")
+    fun getAmountOfFlashCard(id: Int): Int
+
     @Query("SELECT * From flashCard WHERE cardId = :id")
     suspend fun getFlashCardsById(id: Int): FlashCard?
 

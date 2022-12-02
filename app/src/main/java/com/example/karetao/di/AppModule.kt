@@ -43,7 +43,8 @@ object AppModule {
             deleteFlashCard = DeleteFlashCard(repository),
             addFlashCard = AddFlashCard(repository),
             getFlashCard = GetFlashCardUseCase(repository),
-            getFlashCardsFromSameGroupUseCase = GetFlashCardsFromSameGroupUseCase(repository)
+            getFlashCardsFromSameGroupUseCase = GetFlashCardsFromSameGroupUseCase(repository),
+            getFlashCardAmount = GetFlashCardAmount(repository)
         )
     }
 

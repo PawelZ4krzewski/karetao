@@ -35,6 +35,7 @@ import com.example.karetao.presentation.flashcards.FlashCardViewModel
 import com.example.karetao.presentation.flashcards.FlashCardsEvent
 import com.example.karetao.presentation.flashcards.components.FlashCardItem
 import com.example.karetao.presentation.util.Screen
+import com.example.karetao.ui.theme.DarkBlue
 import kotlinx.coroutines.launch
 
 
@@ -58,7 +59,7 @@ fun LearnFlashCardsScreen(
                 Log.d("Learn FlashCard",state.flashCards.toString())
                 Log.d("Learn FlashCard",state.userCard.toString())
             },
-                backgroundColor = MaterialTheme.colors.primary
+                backgroundColor = DarkBlue
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add flashcard")
             }
