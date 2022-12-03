@@ -20,8 +20,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,8 +32,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.FloatingWindow
 import androidx.navigation.NavController
@@ -64,9 +68,20 @@ fun LearnFlashCardsScreen(
     val scope = rememberCoroutineScope()
     var backgroundColor = Gray
 
+    var dialogState = state.learningFlashCardSet.isEmpty();
+
+    val states = state.learningFlashCardSet.reversed()
+        .map { it to rememberSwipeableCardState() }
+
     Scaffold(
         scaffoldState = scaffoldState
     ){
+        FinishDialog(
+            dialogState = dialogState,
+            onDismissRequest = { dialogState = !it },
+            navController = navController,
+            viewModel = viewModel,
+        )
         Column(
             modifier = Modifier
                 .background(backgroundColor)
@@ -74,15 +89,14 @@ fun LearnFlashCardsScreen(
                 .fillMaxWidth()
         ) {
 
-            val states = state.flashCards.reversed()
-                .map { it to rememberSwipeableCardState() }
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(DarkBlue)
-                        .padding(5.dp),
+                        .padding(10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(
                         onClick = {
@@ -90,7 +104,8 @@ fun LearnFlashCardsScreen(
                         },
                         modifier = Modifier
                             .width(50.dp)
-                    ) {
+                            .weight(0.33F)
+                        ) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back",
@@ -98,29 +113,43 @@ fun LearnFlashCardsScreen(
                             modifier = Modifier.size(30.dp)
                         )
                     }
+                    Row(modifier = Modifier
+                        .weight(0.33F),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Text(
+                            text = state.repeatedFlashCard.size.toString(),
+                            style = MaterialTheme.typography.h4,
+                            color = Color.Red,
+                            fontWeight = FontWeight.Bold
 
-                    Text(
-                        text = state.repeatedFlashCard.size.toString(),
-                        style = MaterialTheme.typography.h4,
-                        color = Color.Red
+                        )
+                        Text(
+                            text = state.learningFlashCardSet.size.toString(),
+                            style = MaterialTheme.typography.h3,
+                            color = White,
+                            fontWeight = FontWeight.Bold
 
+
+                        )
+                        Text(
+                            text = state.learnedFlashCard.size.toString(),
+                            style = MaterialTheme.typography.h4,
+                            color = Color.Green,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Box(modifier = Modifier
+                        .weight(0.33F)
                     )
-                    Text(
-                        text = state.learningFlashCardSet.size.toString(),
-                        style = MaterialTheme.typography.h3,
-                        color = White
-
-                    )
-                    Text(
-                        text = state.learnedFlashCard.size.toString(),
-                        style = MaterialTheme.typography.h4,
-                        color = Color.Green
-                    )
-
 
 
 
             }
+
+            Spacer(Modifier.height(60.dp))
 
             Box(
                 Modifier
@@ -147,7 +176,6 @@ fun LearnFlashCardsScreen(
                                     onSwiped = {
                                         if (it == Direction.Left) {
                                             Log.d("Swipeable-Card", "SWIPE LEFT")
-
                                             viewModel.onEvent(
                                                 LearnFlashCardEvent.SaveUserCard(
                                                     flashCard,
@@ -155,11 +183,6 @@ fun LearnFlashCardsScreen(
                                                 )
                                             )
 
-                                            scope.launch {
-                                                scaffoldState.snackbarHostState.showSnackbar(
-                                                    message = "Try one more time later!"
-                                                )
-                                            }
                                         }
 
                                         if (it == Direction.Right) {
@@ -171,12 +194,6 @@ fun LearnFlashCardsScreen(
                                                     true
                                                 )
                                             )
-
-                                            scope.launch {
-                                                scaffoldState.snackbarHostState.showSnackbar(
-                                                    message = "You know it!"
-                                                )
-                                            }
                                         }
                                     },
                                     onSwipeCancel = {
@@ -293,5 +310,141 @@ fun FlipCard(
                 back()
             }
         }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun FinishDialog(
+    dialogState: Boolean,
+    onDismissRequest: (dialogState: Boolean) -> Unit,
+    navController: NavController,
+    viewModel: LearnFlashCardsViewModel
+){
+    if(dialogState){
+        AlertDialog(
+            onDismissRequest = {
+                onDismissRequest(dialogState)
+            },
+            backgroundColor = DarkBlue,
+            title = null,
+            text= null,
+            buttons = {
+                Column(
+                    Modifier
+                        .fillMaxHeight(0.8F)
+                        .fillMaxWidth()
+                        .padding(
+                            start = 20.dp,
+                            top = 20.dp,
+                            end = 20.dp,
+//                            bottom = 0.dp
+                        )
+                    ,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                   Text(
+                       text = "Flashcard set is empty!",
+                       style = MaterialTheme.typography.h5,
+                       fontWeight = FontWeight.Bold,
+                       color = White
+                   )
+
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    Row(
+                        Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
+
+                    ) {
+                        Text(
+                            text = viewModel.state.value.repeatedFlashCard.size.toString(),
+                            style = MaterialTheme.typography.h4,
+                            color = Color.Red,
+                        )
+                        Text(
+                            text = viewModel.state.value.learningFlashCardSet.size.toString(),
+                            style = MaterialTheme.typography.h3,
+                            color = Color.White,
+                        )
+                        Text(
+                            text = viewModel.state.value.learnedFlashCard.size.toString(),
+                            style = MaterialTheme.typography.h4,
+                            color = Color.Green,
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(40.dp))
+
+                    Button(
+                        onClick = {
+                            viewModel.onEvent(LearnFlashCardEvent.LearnAgain(true))
+                            onDismissRequest(dialogState)
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(200.dp)
+
+                    ) {
+                        Text(
+                            text = "LEARN FULL SET",
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            color = White
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Button(
+                        onClick = {
+                            viewModel.onEvent(LearnFlashCardEvent.LearnAgain(false))
+                            onDismissRequest(dialogState)
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green),
+                        shape = RoundedCornerShape(8.dp),
+                        enabled = viewModel.state.value.repeatedFlashCard.isNotEmpty(),
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(200.dp)
+                    ) {
+                        Text(
+                            text = "LEARN FAILURES",
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            color = White
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Button(
+                        onClick = {
+                            onDismissRequest(dialogState)
+                            navController.popBackStack()
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Magenta),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(200.dp)
+                    ) {
+                        Text(
+                            text = "BACK",
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            color = White
+                        )
+                    }
+
+                }
+            },
+            properties =  DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
+            shape = RoundedCornerShape(10.dp)
+        )
     }
 }

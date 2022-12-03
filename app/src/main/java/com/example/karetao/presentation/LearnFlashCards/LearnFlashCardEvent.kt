@@ -5,4 +5,5 @@ import com.example.karetao.presentation.flashcards.FlashCardsEvent
 
 sealed class LearnFlashCardEvent {
     data class SaveUserCard(val flashCard: FlashCard, val isCorrect: Boolean) : LearnFlashCardEvent()
+    data class LearnAgain(val everyFlashcards: Boolean) : LearnFlashCardEvent()
 }

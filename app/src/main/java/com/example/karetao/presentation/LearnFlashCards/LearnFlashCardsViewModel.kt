@@ -141,6 +141,22 @@ class LearnFlashCardsViewModel @Inject constructor(
                     currentUserCard = null
                 }
             }
+            is LearnFlashCardEvent.LearnAgain -> {
+                if(event.everyFlashcards){
+                    _state.value = state.value.copy(
+                        learningFlashCardSet = state.value.flashCards,
+                        learnedFlashCard = emptyList(),
+                        repeatedFlashCard = emptyList()
+                    )
+                }
+                else{
+                    _state.value = state.value.copy(
+                        learningFlashCardSet = state.value.repeatedFlashCard,
+                        learnedFlashCard = emptyList(),
+                        repeatedFlashCard = emptyList()
+                    )
+                }
+            }
         }
     }
 
@@ -177,5 +193,6 @@ class LearnFlashCardsViewModel @Inject constructor(
     sealed class UiEvent{
         data class ShowSnackbar(val message: String): UiEvent()
         object SaveUserCard: UiEvent()
+        object LearnAgain: UiEvent()
     }
 }
