@@ -68,23 +68,27 @@ class CardGroupViewModel @Inject constructor(
     }
 
     private fun getCardGroups(cardGroupOrder: CardGroupOrderType){
-        val cardGroupInformation  = mutableListOf<CardGroupInformation>()
-        var flashCardAmount = 0;
+        Log.d("CardGroups-ViewModel", "GetCardGroups")
+
+        var flashCardAmount: Int
         getCardGroupsJob?.cancel()
         getCardGroupsJob = cardGroupUseCases.getCardGroups(cardGroupOrder)
-            .onEach { cardGroups ->
-                cardGroups.onEach {
+            .onEach { cardGroup ->
+                val cardGroupInformation  = mutableListOf<CardGroupInformation>()
+                cardGroup.onEach {
                     flashCardAmount = flashCardUseCases.getFlashCardAmount(it.groupId!!)
                     cardGroupInformation.add(CardGroupInformation(cardGroup = it, flashCardAmount))
                 }
+
                 _state.value = state.value.copy(
                     cardGroupsInformation = cardGroupInformation,
                     cardGroupOrder = cardGroupOrder
                 )
+
+                Log.d("CardGroups-ViewModel", "Card group Size " + state.value.cardGroupsInformation.size.toString())
             }
            .launchIn(viewModelScope)
 
 
     }
-
 }

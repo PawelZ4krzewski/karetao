@@ -16,7 +16,7 @@ class GetCardGroupsUseCase(
         return repository.getCardGroups().map{ cardGroups ->
             when(cardGroupOrderType.orderType){
                 is OrderType.Ascending -> cardGroups.sortedBy{it.groupName.lowercase()}
-                is OrderType.Descending -> cardGroups.sortedBy{it.groupName.lowercase()}
+                is OrderType.Descending -> cardGroups.sortedByDescending{it.groupName.lowercase()}
             }
         }
     }

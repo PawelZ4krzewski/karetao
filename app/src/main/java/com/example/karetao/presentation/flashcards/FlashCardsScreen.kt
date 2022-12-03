@@ -103,7 +103,7 @@ fun FlashCardsScreen(
                 ) {
                     IconButton(
                         onClick = {
-                            navController.popBackStack()
+                            navController.navigateUp()
                         },
                         modifier = Modifier.width(50.dp)
                     ) {
@@ -162,6 +162,7 @@ fun FlashCardsScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 LazyColumn(modifier = Modifier.fillMaxSize()){
                     items(state.flashCards){ flashCard: FlashCard ->
+                        Spacer(modifier = Modifier.height(16.dp))
                         FlashCardItem(
                             flashCard = flashCard,
                             modifier = Modifier
@@ -189,7 +190,6 @@ fun FlashCardsScreen(
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

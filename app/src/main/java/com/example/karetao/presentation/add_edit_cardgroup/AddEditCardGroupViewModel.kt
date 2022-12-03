@@ -101,7 +101,7 @@ class AddEditCardGroupViewModel @Inject constructor(
                                 description = cardGroupDescription.value.text
                             )
                         )
-                        Log.d("Add cardGroup", "Added CardGroupId: " + currentCardGroupId.toString())
+                        Log.d("Add-cardGroup", "Added CardGroupId: " + currentCardGroupId.toString())
                         _eventFlow.emit(UiEvent.SaveCardGroup)
                     }catch(e: InvalidCardGroupException){
                         _eventFlow.emit(

@@ -67,23 +67,24 @@ fun CardGroupsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(5.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.End,
                 ) {
+//                    IconButton(
+//                        onClick = {
+//                            Log.d("BackIcon", "I will back!")
+//                        },
+//                        modifier = Modifier.width(50.dp)
+//                    ) {
+//                        Icon(
+//                            imageVector = Icons.Filled.ArrowBack,
+//                            contentDescription = "Back",
+//                            tint = White,
+//                            modifier = Modifier.size(30.dp)
+//                        )
+//                    }
                     IconButton(
                         onClick = {
-                            Log.d("BackIcon", "I will back!")
-                        },
-                        modifier = Modifier.width(50.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back",
-                            tint = White,
-                            modifier = Modifier.size(30.dp)
-                        )
-                    }
-                    IconButton(
-                        onClick = {
+                            Log.d("CardGroup-Screen", state.cardGroupsInformation.size.toString())
                             viewModel.onEvent(CardGroupEvent.ToggleOrderSection)
                         },
                     ) {
@@ -127,11 +128,22 @@ fun CardGroupsScreen(
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
-                LazyColumn(modifier = Modifier.fillMaxSize()){
+                LazyColumn(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        start = 16.dp,
+                        end = 16.dp
+                    )
+                ){
+
                     items(state.cardGroupsInformation){ cardGroupInformation: CardGroupInformation ->
+
+                        Spacer(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(15.dp)
+                        )
+
                         CardGroupItem(
                             cardGroupInformation = cardGroupInformation,
                             modifier = Modifier
@@ -157,10 +169,7 @@ fun CardGroupsScreen(
                             }
                         )
 
-                        Spacer(modifier = Modifier
-                            .fillMaxWidth()
-                            .height(15.dp)
-                        )
+
                     }
                 }
             }
