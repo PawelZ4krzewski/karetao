@@ -77,14 +77,18 @@ class LearnFlashCardsViewModel @Inject constructor(
 
                 if(event.isCorrect){
                     _state.value = state.value.copy(
-                        learnedFlashCard = state.value.learnedFlashCard + listOf(event.flashCard)
+                        learnedFlashCard = state.value.learnedFlashCard + listOf(event.flashCard),
+                        learningFlashCardSet = state.value.learningFlashCardSet - event.flashCard
                     )
                 }
                 else{
                     _state.value = state.value.copy(
-                        repeatedFlashCard = state.value.repeatedFlashCard + listOf(event.flashCard)
+                        repeatedFlashCard = state.value.repeatedFlashCard + listOf(event.flashCard),
+                        learningFlashCardSet = state.value.learningFlashCardSet - event.flashCard
                     )
                 }
+
+
 
 
 
@@ -161,6 +165,7 @@ class LearnFlashCardsViewModel @Inject constructor(
             .onEach { flashCards ->
                 _state.value = state.value.copy(
                     flashCards = flashCards,
+                    learningFlashCardSet = flashCards,
                     flashCardOrder = flashCardOrder
                 )
             }

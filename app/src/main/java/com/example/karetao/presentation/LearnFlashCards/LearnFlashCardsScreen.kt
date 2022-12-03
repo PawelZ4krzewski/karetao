@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.FloatingWindow
 import androidx.navigation.NavController
 import com.alexstyl.swipeablecard.Direction
 import com.alexstyl.swipeablecard.ExperimentalSwipeableCardApi
@@ -61,7 +62,6 @@ fun LearnFlashCardsScreen(
     val state = viewModel.state.value
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
-    val stateSwipeableCard = rememberSwipeableCardState()
     var backgroundColor = Gray
 
     Scaffold(
@@ -70,7 +70,8 @@ fun LearnFlashCardsScreen(
         Column(
             modifier = Modifier
                 .background(backgroundColor)
-                .fillMaxSize()
+                .fillMaxHeight()
+                .fillMaxWidth()
         ) {
 
             val states = state.flashCards.reversed()
@@ -105,7 +106,7 @@ fun LearnFlashCardsScreen(
 
                     )
                     Text(
-                        text = (state.flashCards.size - state.repeatedFlashCard.size - state.learnedFlashCard.size).toString(),
+                        text = state.learningFlashCardSet.size.toString(),
                         style = MaterialTheme.typography.h3,
                         color = White
 
@@ -127,8 +128,8 @@ fun LearnFlashCardsScreen(
                     .fillMaxSize()
                     .align(Alignment.CenterHorizontally)
             ) {
-                states.forEach { (flashCard, state) ->
-                    if (state.swipedDirection == null) {
+                states.forEach { (flashCard, swipeableCardState) ->
+                    if (swipeableCardState.swipedDirection == null) {
 
                         var cardFace by remember {
                             mutableStateOf(CardFace.Front)
@@ -141,19 +142,22 @@ fun LearnFlashCardsScreen(
                                 .fillMaxWidth()
                                 .fillMaxHeight(0.8f)
                                 .swipableCard(
-                                    state = state,
+                                    state = swipeableCardState,
                                     blockedDirections = listOf(Direction.Down, Direction.Up),
                                     onSwiped = {
                                         if (it == Direction.Left) {
                                             Log.d("Swipeable-Card", "SWIPE LEFT")
 
-                                            viewModel.onEvent(LearnFlashCardEvent.SaveUserCard(flashCard,false))
+                                            viewModel.onEvent(
+                                                LearnFlashCardEvent.SaveUserCard(
+                                                    flashCard,
+                                                    false
+                                                )
+                                            )
 
                                             scope.launch {
                                                 scaffoldState.snackbarHostState.showSnackbar(
                                                     message = "Try one more time later!"
-
-
                                                 )
                                             }
                                         }
@@ -161,7 +165,12 @@ fun LearnFlashCardsScreen(
                                         if (it == Direction.Right) {
                                             Log.d("Swipeable-Card", "SWIPE RIGHT")
 
-                                            viewModel.onEvent(LearnFlashCardEvent.SaveUserCard(flashCard,true))
+                                            viewModel.onEvent(
+                                                LearnFlashCardEvent.SaveUserCard(
+                                                    flashCard,
+                                                    true
+                                                )
+                                            )
 
                                             scope.launch {
                                                 scaffoldState.snackbarHostState.showSnackbar(
@@ -199,9 +208,12 @@ fun LearnFlashCardsScreen(
                         )
 
                     }
-                    LaunchedEffect(flashCard, state.swipedDirection, state) {
-                        if (state.swipedDirection != null) {
-                            println("The card was swiped to ${state.swipedDirection!!}")
+                    LaunchedEffect(flashCard, swipeableCardState.swipedDirection) {
+                        if (swipeableCardState.swipedDirection != null) {
+                            println("The card was swiped to ${swipeableCardState.swipedDirection!!}")
+                            if(state.learningFlashCardSet.size == 0 ){
+
+                            }
                         }
                     }
                 }
