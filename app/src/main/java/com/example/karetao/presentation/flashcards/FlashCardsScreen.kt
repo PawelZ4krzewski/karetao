@@ -158,9 +158,17 @@ fun FlashCardsScreen(
                 }
             }
 
-            Column( Modifier.padding(16.dp)) {
-                Spacer(modifier = Modifier.height(16.dp))
-                LazyColumn(modifier = Modifier.fillMaxSize()){
+            Column(
+                Modifier.fillMaxWidth()
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            start = 16.dp,
+                            end = 16.dp
+                        )
+                ){
                     items(state.flashCards){ flashCard: FlashCard ->
                         Spacer(modifier = Modifier.height(16.dp))
                         FlashCardItem(

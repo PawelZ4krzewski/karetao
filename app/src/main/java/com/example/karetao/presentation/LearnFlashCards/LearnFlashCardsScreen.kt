@@ -196,7 +196,7 @@ fun LearnFlashCardsScreen(
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Text(
-                                        text = flashCard.question,
+                                        text = flashCard.answer,
                                         style = MaterialTheme.typography.h3,
                                     )
                                 }
