@@ -8,6 +8,8 @@ import com.example.karetao.model.UserCard
 
 data class LearnFlashCardState(
     val flashCards: List<FlashCard> = emptyList(),
+    val learnedFlashCard: List<FlashCard> = emptyList(),
+    val repeatedFlashCard: List<FlashCard> = emptyList(),
     val flashCardOrder: FlashCardOrderType = FlashCardOrderType.Question(OrderType.Ascending),
     val userCard: List<UserCard> = emptyList(),
     val username: String = "TEST"

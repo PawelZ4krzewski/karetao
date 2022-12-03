@@ -114,6 +114,7 @@ fun FlashCardsScreen(
                             modifier = Modifier.size(30.dp)
                         )
                     }
+
                     IconButton(
                         onClick = {
                             viewModel.onEvent(FlashCardsEvent.ToggleOrderSection)

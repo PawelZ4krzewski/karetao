@@ -73,16 +73,30 @@ class LearnFlashCardsViewModel @Inject constructor(
     fun onEvent(event: LearnFlashCardEvent){
         when(event){
             is LearnFlashCardEvent.SaveUserCard -> {
-                Log.d("Learn FlashCard","${event.cardId}  ${event.isCorrect}")
+                Log.d("Learn-FlashCard","${event.flashCard}  ${event.isCorrect}")
+
+                if(event.isCorrect){
+                    _state.value = state.value.copy(
+                        learnedFlashCard = state.value.learnedFlashCard + listOf(event.flashCard)
+                    )
+                }
+                else{
+                    _state.value = state.value.copy(
+                        repeatedFlashCard = state.value.repeatedFlashCard + listOf(event.flashCard)
+                    )
+                }
+
+
+
 
                 try{
-                    existedUserCard = state.value.userCard.filter { it.cardId == event.cardId && it.username == state.value.username}[0]
+                    existedUserCard = state.value.userCard.filter { it.cardId == event.flashCard.cardId && it.username == state.value.username}[0]
                 }catch(e: Exception){
-                    Log.d("Learn FlashCard","UserCard doesn't exist yet. Official Error: " + e.toString())
+                    Log.d("Learn-FlashCard","UserCard doesn't exist yet. Official Error: " + e.toString())
                 }
 
                 if(existedUserCard != null){
-                    Log.d("Learn FlashCard","Edit Existing Card")
+                    Log.d("Learn-FlashCard","Edit Existing Card")
                     if(event.isCorrect){
                         currentStatus = maxOf(existedUserCard!!.status -1, 0)
                     }
@@ -97,9 +111,9 @@ class LearnFlashCardsViewModel @Inject constructor(
                     )
 
                 } else {
-                    Log.d("Learn FlashCard","Create New Card")
+                    Log.d("Learn-FlashCard","Create New Card")
                     currentUserCard = UserCard(
-                        cardId = event.cardId,
+                        cardId = event.flashCard.cardId!!,
                         username = state.value.username,
                         status = 5
                     )
@@ -152,6 +166,8 @@ class LearnFlashCardsViewModel @Inject constructor(
             }
             .launchIn(viewModelScope)
     }
+
+
 
     sealed class UiEvent{
         data class ShowSnackbar(val message: String): UiEvent()

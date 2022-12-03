@@ -4,22 +4,30 @@ import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,10 +44,12 @@ import com.example.karetao.presentation.flashcards.FlashCardsEvent
 import com.example.karetao.presentation.flashcards.components.FlashCardItem
 import com.example.karetao.presentation.util.Screen
 import com.example.karetao.ui.theme.DarkBlue
+import com.example.karetao.ui.theme.Gray
+import com.example.karetao.ui.theme.White
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalSwipeableCardApi::class)
+@OptIn(ExperimentalSwipeableCardApi::class, ExperimentalMaterialApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalAnimationApi
@@ -52,61 +62,146 @@ fun LearnFlashCardsScreen(
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val stateSwipeableCard = rememberSwipeableCardState()
+    var backgroundColor = Gray
 
     Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(onClick = {
-                Log.d("Learn FlashCard",state.flashCards.toString())
-                Log.d("Learn FlashCard",state.userCard.toString())
-            },
-                backgroundColor = DarkBlue
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add flashcard")
-            }
-        },
         scaffoldState = scaffoldState
     ){
         Column(
             modifier = Modifier
+                .background(backgroundColor)
                 .fillMaxSize()
-                .padding(16.dp)
         ) {
-
-            var hint by remember {
-                mutableStateOf("Swipe a card or press a button below")
-            }
 
             val states = state.flashCards.reversed()
                 .map { it to rememberSwipeableCardState() }
 
-            Box(Modifier
-                .padding(24.dp)
-                .fillMaxSize()
-                .aspectRatio(1f)
-                .align(Alignment.CenterHorizontally)) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(DarkBlue)
+                        .padding(5.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    IconButton(
+                        onClick = {
+                            navController.popBackStack()
+                        },
+                        modifier = Modifier
+                            .width(50.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = White,
+                            modifier = Modifier.size(30.dp)
+                        )
+                    }
+
+                    Text(
+                        text = state.repeatedFlashCard.size.toString(),
+                        style = MaterialTheme.typography.h4,
+                        color = Color.Red
+
+                    )
+                    Text(
+                        text = (state.flashCards.size - state.repeatedFlashCard.size - state.learnedFlashCard.size).toString(),
+                        style = MaterialTheme.typography.h3,
+                        color = White
+
+                    )
+                    Text(
+                        text = state.learnedFlashCard.size.toString(),
+                        style = MaterialTheme.typography.h4,
+                        color = Color.Green
+                    )
+
+
+
+
+            }
+
+            Box(
+                Modifier
+                    .padding(20.dp)
+                    .fillMaxSize()
+                    .align(Alignment.CenterHorizontally)
+            ) {
                 states.forEach { (flashCard, state) ->
                     if (state.swipedDirection == null) {
-                        ProfileCard(
+
+                        var cardFace by remember {
+                            mutableStateOf(CardFace.Front)
+                        }
+
+                        FlipCard(
+                            cardFace = cardFace,
+                            onClick = { cardFace = cardFace.next },
                             modifier = Modifier
-                                .fillMaxSize()
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.8f)
                                 .swipableCard(
                                     state = state,
-                                    blockedDirections = listOf(Direction.Down),
+                                    blockedDirections = listOf(Direction.Down, Direction.Up),
                                     onSwiped = {
-                                        // swipes are handled by the LaunchedEffect
-                                        // so that we track button clicks & swipes
-                                        // from the same place
+                                        if (it == Direction.Left) {
+                                            Log.d("Swipeable-Card", "SWIPE LEFT")
+
+                                            viewModel.onEvent(LearnFlashCardEvent.SaveUserCard(flashCard,false))
+
+                                            scope.launch {
+                                                scaffoldState.snackbarHostState.showSnackbar(
+                                                    message = "Try one more time later!"
+
+
+                                                )
+                                            }
+                                        }
+
+                                        if (it == Direction.Right) {
+                                            Log.d("Swipeable-Card", "SWIPE RIGHT")
+
+                                            viewModel.onEvent(LearnFlashCardEvent.SaveUserCard(flashCard,true))
+
+                                            scope.launch {
+                                                scaffoldState.snackbarHostState.showSnackbar(
+                                                    message = "You know it!"
+                                                )
+                                            }
+                                        }
                                     },
                                     onSwipeCancel = {
                                         Log.d("Swipeable-Card", "Cancelled swipe")
                                     }
                                 ),
-                            flashCard = flashCard
+                            front = {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = flashCard.question,
+                                        style = MaterialTheme.typography.h3,
+                                    )
+                                }
+                            },
+                            back = {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = flashCard.question,
+                                        style = MaterialTheme.typography.h3,
+                                    )
+                                }
+                            },
                         )
+
                     }
-                    LaunchedEffect(flashCard, state.swipedDirection) {
+                    LaunchedEffect(flashCard, state.swipedDirection, state) {
                         if (state.swipedDirection != null) {
-                            hint = "You swiped ${state.swipedDirection}"
+                            println("The card was swiped to ${state.swipedDirection!!}")
                         }
                     }
                 }
@@ -117,46 +212,74 @@ fun LearnFlashCardsScreen(
     }
 }
 
+
+enum class CardFace(val angle: Float) {
+    Front(0f) {
+        override val next: CardFace
+            get() = Back
+    },
+    Back(180f) {
+        override val next: CardFace
+            get() = Front
+    };
+
+    abstract val next: CardFace
+}
+
+enum class RotationAxis {
+    AxisX,
+    AxisY,
+}
+
+@ExperimentalMaterialApi
 @Composable
-private fun ProfileCard(
-    modifier: Modifier,
-    flashCard: FlashCard
+fun FlipCard(
+    cardFace: CardFace,
+    onClick: (CardFace) -> Unit,
+    modifier: Modifier = Modifier,
+    axis: RotationAxis = RotationAxis.AxisY,
+    back: @Composable () -> Unit = {},
+    front: @Composable () -> Unit = {},
 ) {
-    Card(modifier) {
-        Box {
-            Scrim(Modifier.align(Alignment.BottomCenter))
-            Column(Modifier.align(Alignment.BottomStart)) {
-                Text(text = flashCard.question,
-                    color = MaterialTheme.colors.onPrimary,
-                    fontSize = 22.sp,
-                    modifier = Modifier.padding(10.dp))
+    val rotation = animateFloatAsState(
+        targetValue = cardFace.angle,
+        animationSpec = tween(
+            durationMillis = 800,
+            easing = FastOutSlowInEasing,
+        )
+    )
+    Card(
+        onClick = { onClick(cardFace) },
+        modifier = modifier
+            .graphicsLayer {
+                if (axis == RotationAxis.AxisX) {
+                    rotationX = rotation.value
+                } else {
+                    rotationY = rotation.value
+                }
+                cameraDistance = 12f * density
+            },
+    ) {
+        if (rotation.value <= 90f) {
+            Box(
+                Modifier.fillMaxSize()
+            ) {
+                front()
+            }
+        } else {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        if (axis == RotationAxis.AxisX) {
+                            rotationX = 180f
+                        } else {
+                            rotationY = 180f
+                        }
+                    },
+            ) {
+                back()
             }
         }
     }
-}
-
-@Composable
-private fun Hint(text: String) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .padding(horizontal = 24.dp, vertical = 32.dp)
-            .fillMaxWidth()
-    ) {
-        Text(
-            text = text,
-            color = MaterialTheme.colors.onPrimary,
-            fontWeight = FontWeight.Bold,
-            fontSize = 22.sp,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-fun Scrim(modifier: Modifier = Modifier) {
-    Box(modifier
-        .background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black)))
-        .height(180.dp)
-        .fillMaxWidth())
 }
