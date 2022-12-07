@@ -27,6 +27,7 @@ class CardGroupViewModel @Inject constructor(
     private val _state = mutableStateOf(CardGroupState())
     val state: State<CardGroupState> = _state
 
+
     private var recentlyDeletedCardGroup: CardGroup? = null
 
     private var getCardGroupsJob: Job? = null

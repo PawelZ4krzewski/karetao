@@ -1,8 +1,10 @@
 package com.example.karetao.presentation.add_edit_flashcard
 
 import android.util.Log
-import androidx.compose.runtime.State
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,15 +23,8 @@ class AddEditFlashCardViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _flashCardQuestion = mutableStateOf(FlashCardTextFieldState(
-        hint = "Enter question..."
-    ))
-    val flashCardQuestion: State<FlashCardTextFieldState> = _flashCardQuestion
-
-    private val _flashCardAnswer = mutableStateOf(FlashCardTextFieldState(
-        hint = "Enter answer..."
-    ))
-    val flashCardAnswer: State<FlashCardTextFieldState> = _flashCardAnswer
+    private val _state: SnapshotStateList<AddFlashCardItemState> = mutableStateListOf(AddFlashCardItemState())
+    val state: SnapshotStateList<AddFlashCardItemState> = _state
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -45,11 +40,11 @@ class AddEditFlashCardViewModel @Inject constructor(
                     flashCardUseCases.getFlashCard(cardId)?.also {
                         currentFlashCardId = it.cardId
 
-                        _flashCardQuestion.value = flashCardQuestion.value.copy(
+                        _state[0].flashCardQuestion.value = state[0].flashCardQuestion.value.copy(
                             text = it.question,
                             isHintVisible = false
                         )
-                        _flashCardAnswer.value = flashCardAnswer.value.copy(
+                        _state[0].flashCardAnswer.value = state[0].flashCardAnswer.value.copy(
                             text = it.answer,
                             isHintVisible = false
                         )
@@ -71,44 +66,54 @@ class AddEditFlashCardViewModel @Inject constructor(
     fun onEvent(event: AddEditFlashCardEvent){
         when(event){
             is AddEditFlashCardEvent.EnteredQuestion -> {
-                _flashCardQuestion.value = _flashCardQuestion.value.copy(
+                _state[event.id].flashCardQuestion.value = _state[event.id].flashCardQuestion.value.copy(
                     text = event.value
                 )
             }
             is AddEditFlashCardEvent.ChangeQuestionFocus -> {
-                _flashCardQuestion.value = _flashCardQuestion.value.copy(
-                    isHintVisible = !event.focusState.isFocused && flashCardQuestion.value.text.isBlank()
+                _state[event.id].flashCardQuestion.value = _state[event.id].flashCardQuestion.value.copy(
+                    isHintVisible = !event.focusState.isFocused && state[event.id].flashCardQuestion.value.text.isBlank()
                 )
             }
             is AddEditFlashCardEvent.EnteredAnswer -> {
-                _flashCardAnswer.value = _flashCardAnswer.value.copy(
+                _state[event.id].flashCardAnswer.value = _state[event.id].flashCardAnswer.value.copy(
                     text = event.value
                 )
             }
             is AddEditFlashCardEvent.ChangeAnswerFocus -> {
-                _flashCardAnswer.value = _flashCardAnswer.value.copy(
-                    isHintVisible = !event.focusState.isFocused && flashCardAnswer.value.text.isBlank()
+                _state[event.id].flashCardAnswer.value = _state[event.id].flashCardAnswer.value.copy(
+                    isHintVisible = !event.focusState.isFocused && state[event.id].flashCardAnswer.value.text.isBlank()
                 )
             }
+            is AddEditFlashCardEvent.AddNewFlashCardItem -> {
+                _state.add(AddFlashCardItemState())
+                Log.d("Add-flashcard","Ilosc okienek" + state.size.toString())
+
+            }
+            is AddEditFlashCardEvent.DeleteFlashCardItem -> {
+                _state.remove(event.item)
+            }
             is AddEditFlashCardEvent.SaveFlashCard -> {
-                viewModelScope.launch {
-                    try{
-                        flashCardUseCases.addFlashCard(
-                            FlashCard(
-                                cardId = currentFlashCardId,
-                                groupId = currentGroupId,
-                                question = flashCardQuestion.value.text,
-                                answer = flashCardAnswer.value.text
+                state.forEach {
+                    viewModelScope.launch {
+                        try{
+                            flashCardUseCases.addFlashCard(
+                                FlashCard(
+                                    cardId = currentFlashCardId,
+                                    groupId = currentGroupId,
+                                    question = it.flashCardQuestion.value.text,
+                                    answer = it.flashCardAnswer.value.text
+                                )
                             )
-                        )
-                        Log.d("Add flashcard", currentFlashCardId.toString())
-                        _eventFlow.emit(UiEvent.SaveFlashCard)
-                    }catch(e: InvalidFlashCardException){
-                        _eventFlow.emit(
-                            UiEvent.ShowSnackbar(
-                                message = e.message ?: "Coulnd't save flashcard"
+                            Log.d("Add flashcard", currentFlashCardId.toString())
+                            _eventFlow.emit(UiEvent.SaveFlashCard)
+                        }catch(e: InvalidFlashCardException){
+                            _eventFlow.emit(
+                                UiEvent.ShowSnackbar(
+                                    message = e.message ?: "Coulnd't save flashcard"
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }

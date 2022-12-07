@@ -3,8 +3,12 @@ package com.example.karetao.presentation.add_edit_flashcard.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
@@ -21,6 +25,8 @@ import com.example.karetao.ui.theme.White
 fun AddFlashCardItem(
     questionState: FlashCardTextFieldState,
     answerState: FlashCardTextFieldState,
+    index: Int,
+    onDeleteClick: () -> Unit,
     viewModel: AddEditFlashCardViewModel  = hiltViewModel()
 )
 {
@@ -31,16 +37,40 @@ fun AddFlashCardItem(
         Column(
             modifier = Modifier
                 .background(White, RoundedCornerShape(10.dp))
-                .padding(30.dp)
+                .padding(
+                    start = 30.dp,
+                    top = 30.dp,
+                    end = 30.dp,
+                    bottom = 30.dp
+                )
         ) {
+
+            if(index > 0){
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .offset(y=(-25).dp, x = (25).dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    IconButton(
+                        onClick = onDeleteClick,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Flashcard"
+                        )
+                    }
+                }
+            }
+
             TransparentHintTextField(
                 text = questionState.text,
                 hint = questionState.hint,
                 onValueChange = {
-                    viewModel.onEvent(AddEditFlashCardEvent.EnteredQuestion(it))
+                    viewModel.onEvent(AddEditFlashCardEvent.EnteredQuestion(it,index))
                 },
                 onFocusChange = {
-                    viewModel.onEvent(AddEditFlashCardEvent.ChangeQuestionFocus(it))
+                    viewModel.onEvent(AddEditFlashCardEvent.ChangeQuestionFocus(it,index))
                 },
                 isHintVisible = questionState.isHintVisible,
                 singleLine = true,
@@ -68,10 +98,10 @@ fun AddFlashCardItem(
                 text = answerState.text,
                 hint = answerState.hint,
                 onValueChange = {
-                    viewModel.onEvent(AddEditFlashCardEvent.EnteredAnswer(it))
+                    viewModel.onEvent(AddEditFlashCardEvent.EnteredAnswer(it,index))
                 },
                 onFocusChange = {
-                    viewModel.onEvent(AddEditFlashCardEvent.ChangeAnswerFocus(it))
+                    viewModel.onEvent(AddEditFlashCardEvent.ChangeAnswerFocus(it,index))
                 },
                 isHintVisible = answerState.isHintVisible,
                 singleLine = true,

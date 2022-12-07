@@ -3,7 +3,8 @@ package com.example.karetao.presentation.add_edit_flashcard
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -11,17 +12,13 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.karetao.presentation.add_edit_cardgroup.AddEditCardGroupEvent
 import com.example.karetao.presentation.add_edit_flashcard.components.AddFlashCardItem
-import com.example.karetao.presentation.add_edit_flashcard.components.TransparentHintTextField
 import com.example.karetao.ui.theme.DarkBlue
 import com.example.karetao.ui.theme.White
 import kotlinx.coroutines.flow.collectLatest
@@ -32,34 +29,32 @@ fun AddEditFlashCardScreen(
     navController: NavController,
     viewModel: AddEditFlashCardViewModel = hiltViewModel()
 ) {
-    val questionState = viewModel.flashCardQuestion.value
-    val answerState = viewModel.flashCardAnswer.value
+    val state = viewModel.state
 
     val scaffoldState = rememberScaffoldState()
 
-    val scope = rememberCoroutineScope()
-    
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
-            when(event){
-               is AddEditFlashCardViewModel.UiEvent.ShowSnackbar -> {
+            when (event) {
+                is AddEditFlashCardViewModel.UiEvent.ShowSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message
                     )
-               }
-               is AddEditFlashCardViewModel.UiEvent.SaveFlashCard -> {
+                }
+                is AddEditFlashCardViewModel.UiEvent.SaveFlashCard -> {
                     navController.navigateUp()
-               }
+                }
             }
         }
     }
-    
+
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                viewModel.onEvent(AddEditFlashCardEvent.SaveFlashCard)
-            },
-            backgroundColor = DarkBlue
+            FloatingActionButton(
+                onClick = {
+                    viewModel.onEvent(AddEditFlashCardEvent.AddNewFlashCardItem)
+                },
+                backgroundColor = DarkBlue
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -106,7 +101,7 @@ fun AddEditFlashCardScreen(
 
                 IconButton(
                     onClick = {
-                            viewModel.onEvent(AddEditFlashCardEvent.SaveFlashCard)
+                        viewModel.onEvent(AddEditFlashCardEvent.SaveFlashCard)
                     },
                     modifier = Modifier.width(50.dp)
                 ) {
@@ -122,14 +117,24 @@ fun AddEditFlashCardScreen(
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .padding(20.dp)
-            ){
-                AddFlashCardItem(
-                    questionState = questionState,
-                    answerState = answerState
-                )
+            ) {
+                itemsIndexed(state) {i, flashCardStateItem ->
+                    AddFlashCardItem(
+                        questionState = flashCardStateItem.flashCardQuestion.value,
+                        answerState = flashCardStateItem.flashCardAnswer.value,
+                        index = i,
+                        onDeleteClick = { viewModel.onEvent(AddEditFlashCardEvent.DeleteFlashCardItem(flashCardStateItem)) }
+                    )
+
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(15.dp)
+                    )
+
+                }
             }
         }
     }

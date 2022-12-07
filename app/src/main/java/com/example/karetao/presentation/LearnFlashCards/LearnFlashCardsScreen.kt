@@ -341,7 +341,7 @@ fun FinishDialog(
                             color = Color.Red,
                         )
                         Text(
-                            text = viewModel.state.value.learningFlashCardSet.size.toString(),
+                            text = viewModel.state.value.flashCards.size.toString(),
                             style = MaterialTheme.typography.h3,
                             color = Color.White,
                         )
