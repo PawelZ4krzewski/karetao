@@ -2,6 +2,7 @@ package com.example.karetao.presentation.flashcards
 
 import OrderSection
 import android.annotation.SuppressLint
+import android.content.ClipData
 import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
@@ -167,10 +168,10 @@ fun FlashCardsScreen(
                         .padding(
                             start = 16.dp,
                             end = 16.dp
-                        )
+                        ),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
                 ){
                     items(state.flashCards){ flashCard: FlashCard ->
-                        Spacer(modifier = Modifier.height(16.dp))
                         FlashCardItem(
                             flashCard = flashCard,
                             modifier = Modifier
@@ -196,6 +197,9 @@ fun FlashCardsScreen(
                                 }
                             }
                         )
+                    }
+                    item { 
+                        Spacer(modifier = Modifier.height(75.dp))
                     }
                 }
             }
