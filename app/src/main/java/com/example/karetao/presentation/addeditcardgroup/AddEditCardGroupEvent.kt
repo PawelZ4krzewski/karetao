@@ -1,4 +1,4 @@
-package com.example.karetao.presentation.add_edit_cardgroup
+package com.example.karetao.presentation.addeditcardgroup
 
 import androidx.compose.ui.focus.FocusState
 

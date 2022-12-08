@@ -3,8 +3,9 @@ package com.example.karetao.data.repository
 import com.example.karetao.data.DAO.FlashCardDao
 import com.example.karetao.model.FlashCard
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class FlashCardRepository constructor(private val dao: FlashCardDao) {
+class FlashCardRepository @Inject constructor(private val dao: FlashCardDao) {
 
     fun getFlashCards(): Flow<List<FlashCard>> {
         return dao.getFlashCards()

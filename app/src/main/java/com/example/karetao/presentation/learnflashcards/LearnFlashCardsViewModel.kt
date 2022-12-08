@@ -1,4 +1,4 @@
-package com.example.karetao.presentation.LearnFlashCards
+package com.example.karetao.presentation.learnflashcards
 
 import android.os.Build
 import android.util.Log
@@ -11,12 +11,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.karetao.data.use_case.OrderType
 import com.example.karetao.data.use_case.flashCard.FlashCardOrderType
 import com.example.karetao.data.use_case.flashCard.FlashCardUseCases
+import com.example.karetao.data.use_case.flashCard.GetFlashCardsFromSameGroupUseCase
 import com.example.karetao.data.use_case.userCard.UserCardOrderType
 import com.example.karetao.data.use_case.userCard.UserCardUseCases
 import com.example.karetao.model.InvalidFlashCardException
 import com.example.karetao.model.UserCard
-import com.example.karetao.presentation.add_edit_flashcard.AddEditFlashCardViewModel
-import com.example.karetao.presentation.flashcards.FlashCardState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,15 +23,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.time.Instant
-import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class LearnFlashCardsViewModel @Inject constructor(
     private val userCardUseCase: UserCardUseCases,
-    private val flashCardUseCases: FlashCardUseCases,
+    private val getFlashCardsFromSameGroupUseCase: GetFlashCardsFromSameGroupUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel(){
 
@@ -87,11 +84,6 @@ class LearnFlashCardsViewModel @Inject constructor(
                         learningFlashCardSet = state.value.learningFlashCardSet - event.flashCard
                     )
                 }
-
-
-
-
-
 
                 try{
                     existedUserCard = state.value.userCard.filter { it.cardId == event.flashCard.cardId && it.username == state.value.username}[0]
@@ -177,7 +169,7 @@ class LearnFlashCardsViewModel @Inject constructor(
     private fun getFlashCardsFromSameGroup(flashCardOrder: FlashCardOrderType, groupId:Int){
         getFlashCardsJob?.cancel()
 
-        getFlashCardsJob  = flashCardUseCases.getFlashCardsFromSameGroupUseCase(groupId, flashCardOrder)
+        getFlashCardsJob  = getFlashCardsFromSameGroupUseCase(groupId, flashCardOrder)
             .onEach { flashCards ->
                 _state.value = state.value.copy(
                     flashCards = flashCards,
@@ -193,6 +185,5 @@ class LearnFlashCardsViewModel @Inject constructor(
     sealed class UiEvent{
         data class ShowSnackbar(val message: String): UiEvent()
         object SaveUserCard: UiEvent()
-        object LearnAgain: UiEvent()
     }
 }

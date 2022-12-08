@@ -1,4 +1,4 @@
-package com.example.karetao.presentation.add_edit_flashcard
+package com.example.karetao.presentation.addeditflashcard
 
 data class FlashCardTextFieldState(
     val text: String = "",

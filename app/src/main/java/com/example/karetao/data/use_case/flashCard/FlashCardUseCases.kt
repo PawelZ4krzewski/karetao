@@ -1,9 +1,11 @@
 package com.example.karetao.data.use_case.flashCard
 
-data class FlashCardUseCases(
+import javax.inject.Inject
+
+data class FlashCardUseCases @Inject constructor(
     val getFlashCards: GetFlashCardsUseCase,
-    val deleteFlashCard: DeleteFlashCard,
-    val addFlashCard: AddFlashCard,
+    val deleteFlashCard: DeleteFlashCardUseCase,
+    val addFlashCard: AddFlashCardUseCase,
     val getFlashCard: GetFlashCardUseCase,
     val getFlashCardsFromSameGroupUseCase: GetFlashCardsFromSameGroupUseCase,
     val getFlashCardAmount: GetFlashCardAmount

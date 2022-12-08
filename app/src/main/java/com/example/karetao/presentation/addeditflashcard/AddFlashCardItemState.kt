@@ -1,7 +1,6 @@
-package com.example.karetao.presentation.add_edit_flashcard
+package com.example.karetao.presentation.addeditflashcard
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 
 data class AddFlashCardItemState(

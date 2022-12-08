@@ -1,4 +1,4 @@
-package com.example.karetao.presentation.add_edit_cardgroup
+package com.example.karetao.presentation.addeditcardgroup
 
 import android.util.Log
 import androidx.compose.runtime.State
@@ -8,11 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.karetao.data.use_case.cardGroup.CardGroupUseCases
 import com.example.karetao.model.CardGroup
-import com.example.karetao.model.FlashCard
 import com.example.karetao.model.InvalidCardGroupException
-import com.example.karetao.model.InvalidFlashCardException
-import com.example.karetao.presentation.add_edit_flashcard.AddEditFlashCardEvent
-import com.example.karetao.presentation.add_edit_flashcard.FlashCardTextFieldState
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

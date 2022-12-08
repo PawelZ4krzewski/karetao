@@ -2,6 +2,9 @@ package com.example.karetao.di
 
 import android.app.Application
 import androidx.room.Room
+import com.example.karetao.data.DAO.CardGroupDao
+import com.example.karetao.data.DAO.FlashCardDao
+import com.example.karetao.data.DAO.UserCardDao
 import com.example.karetao.data.database.AppDatabase
 import com.example.karetao.data.repository.CardGroupRepository
 import com.example.karetao.data.repository.FlashCardRepository
@@ -31,54 +34,21 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideFlashCardRepository(db: AppDatabase): FlashCardRepository{
-        return FlashCardRepository(db.flashCardDao)
+    fun provideCardGroupDao(db: AppDatabase): CardGroupDao{
+        return db.cardGroupDao
     }
 
     @Provides
     @Singleton
-    fun provideFlashCardUseCases(repository: FlashCardRepository): FlashCardUseCases {
-        return FlashCardUseCases(
-            getFlashCards = GetFlashCardsUseCase(repository),
-            deleteFlashCard = DeleteFlashCard(repository),
-            addFlashCard = AddFlashCard(repository),
-            getFlashCard = GetFlashCardUseCase(repository),
-            getFlashCardsFromSameGroupUseCase = GetFlashCardsFromSameGroupUseCase(repository),
-            getFlashCardAmount = GetFlashCardAmount(repository)
-        )
+    fun provideFlashCardDao(db: AppDatabase): FlashCardDao {
+        return db.flashCardDao
     }
 
     @Provides
     @Singleton
-    fun provideCardGroupRepository(db: AppDatabase): CardGroupRepository{
-        return CardGroupRepository(db.cardGroupDao)
+    fun provideUserCardDao(db: AppDatabase): UserCardDao {
+        return db.userCardDao
     }
 
-    @Provides
-    @Singleton
-    fun provideCardGroupUseCase(repository: CardGroupRepository): CardGroupUseCases{
-        return CardGroupUseCases(
-            getCardGroups = GetCardGroupsUseCase(repository),
-            deleteCardGroup = DeleteCardGroup(repository),
-            addCardGroup = AddCardGroup(repository),
-            getCardGroup = GetCardGroupUseCase(repository)
-        )
-    }
 
-    @Provides
-    @Singleton
-    fun provideUserCardRepository(db: AppDatabase): UserCardRepository{
-        return UserCardRepository(db.userCardDao)
-    }
-
-    @Provides
-    @Singleton
-    fun provideUserGroupUseCase(repository: UserCardRepository): UserCardUseCases{
-        return UserCardUseCases(
-            getUserCard = GetUserCardUseCase(repository),
-            getUserCardFromSameUser = GetUserCardFromSameUserUseCase(repository),
-            insertUserCard = AddUserCard(repository),
-            deleteUserCard = DeleteUserCard(repository)
-        )
-    }
 }

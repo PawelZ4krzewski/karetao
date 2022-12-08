@@ -1,4 +1,4 @@
-package com.example.karetao.presentation.add_edit_flashcard.components
+package com.example.karetao.presentation.addeditflashcard.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,14 +10,13 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.karetao.presentation.add_edit_flashcard.AddEditFlashCardEvent
-import com.example.karetao.presentation.add_edit_flashcard.AddEditFlashCardViewModel
-import com.example.karetao.presentation.add_edit_flashcard.FlashCardTextFieldState
+import com.example.karetao.presentation.addeditflashcard.AddEditFlashCardEvent
+import com.example.karetao.presentation.addeditflashcard.AddEditFlashCardViewModel
+import com.example.karetao.presentation.addeditflashcard.FlashCardTextFieldState
 import com.example.karetao.ui.theme.DarkBlue
 import com.example.karetao.ui.theme.White
 

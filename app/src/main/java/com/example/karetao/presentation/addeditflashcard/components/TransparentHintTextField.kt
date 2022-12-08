@@ -1,4 +1,4 @@
-package com.example.karetao.presentation.add_edit_flashcard.components
+package com.example.karetao.presentation.addeditflashcard.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -1,4 +1,4 @@
-package com.example.karetao.presentation.add_edit_cardgroup
+package com.example.karetao.presentation.addeditcardgroup
 
 data class CardGroupTextFieldState(
     val text: String = "",

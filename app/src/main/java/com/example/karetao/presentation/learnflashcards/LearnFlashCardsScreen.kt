@@ -1,4 +1,4 @@
-package com.example.karetao.presentation.LearnFlashCards
+package com.example.karetao.presentation.learnflashcards
 
 import android.annotation.SuppressLint
 import android.os.Build

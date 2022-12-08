@@ -1,4 +1,4 @@
-package com.example.karetao.presentation.add_edit_flashcard
+package com.example.karetao.presentation.addeditflashcard
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.karetao.presentation.add_edit_flashcard.components.AddFlashCardItem
+import com.example.karetao.presentation.addeditflashcard.components.AddFlashCardItem
 import com.example.karetao.ui.theme.DarkBlue
 import com.example.karetao.ui.theme.White
 import kotlinx.coroutines.flow.collectLatest

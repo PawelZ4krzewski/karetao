@@ -4,8 +4,9 @@ import com.example.karetao.data.DAO.CardGroupDao
 import com.example.karetao.model.CardGroup
 import com.example.karetao.model.FlashCard
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class CardGroupRepository constructor(private val dao: CardGroupDao) {
+class CardGroupRepository @Inject constructor(private val dao: CardGroupDao) {
 
     fun getCardGroups(): Flow<List<CardGroup>> {
         return dao.getCardGroups()

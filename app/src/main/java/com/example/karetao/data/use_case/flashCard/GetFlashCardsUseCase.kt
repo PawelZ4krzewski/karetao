@@ -5,9 +5,10 @@ import com.example.karetao.data.use_case.OrderType
 import com.example.karetao.model.FlashCard
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 
-class GetFlashCardsUseCase(
+class GetFlashCardsUseCase @Inject constructor(
     private val repository: FlashCardRepository
 ) {
     operator fun invoke(

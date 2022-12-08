@@ -1,4 +1,4 @@
-package com.example.karetao.presentation.add_edit_cardgroup
+package com.example.karetao.presentation.addeditcardgroup
 
 
 import android.annotation.SuppressLint
@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.karetao.presentation.add_edit_flashcard.components.TransparentHintTextField
+import com.example.karetao.presentation.addeditflashcard.components.TransparentHintTextField
 import com.example.karetao.ui.theme.DarkBlue
 import com.example.karetao.ui.theme.White
 import kotlinx.coroutines.flow.collectLatest
