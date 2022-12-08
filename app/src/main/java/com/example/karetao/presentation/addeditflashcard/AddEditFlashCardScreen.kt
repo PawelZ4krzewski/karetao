@@ -29,7 +29,7 @@ fun AddEditFlashCardScreen(
     navController: NavController,
     viewModel: AddEditFlashCardViewModel = hiltViewModel()
 ) {
-    val state = viewModel.state
+    val state = viewModel.state.value
 
     val scaffoldState = rememberScaffoldState()
 
@@ -121,12 +121,11 @@ fun AddEditFlashCardScreen(
                 modifier = Modifier
                     .padding(20.dp)
             ) {
-                itemsIndexed(state) {i, flashCardStateItem ->
+                itemsIndexed(state.addFlashCards) {i, addFlashCardItem ->
                     AddFlashCardItem(
-                        questionState = flashCardStateItem.flashCardQuestion.value,
-                        answerState = flashCardStateItem.flashCardAnswer.value,
+                        addFlashCardItemValues = addFlashCardItem,
                         index = i,
-                        onDeleteClick = { viewModel.onEvent(AddEditFlashCardEvent.DeleteFlashCardItem(flashCardStateItem)) }
+                        onDeleteClick = { viewModel.onEvent(AddEditFlashCardEvent.DeleteFlashCardItem(addFlashCardItem)) }
                     )
 
                     Spacer(modifier = Modifier

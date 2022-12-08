@@ -7,7 +7,7 @@ sealed class AddEditFlashCardEvent {
     data class ChangeQuestionFocus(val focusState: FocusState, val id: Int): AddEditFlashCardEvent()
     data class EnteredAnswer(val value: String, val id: Int): AddEditFlashCardEvent()
     data class ChangeAnswerFocus(val focusState: FocusState, val id: Int): AddEditFlashCardEvent()
-    data class DeleteFlashCardItem(val item: AddFlashCardItemState): AddEditFlashCardEvent()
+    data class DeleteFlashCardItem(val item: AddFlashCardItemValues): AddEditFlashCardEvent()
 
     object AddNewFlashCardItem: AddEditFlashCardEvent()
     object SaveFlashCard: AddEditFlashCardEvent()

@@ -1,8 +1,8 @@
 package com.example.karetao.presentation.addeditflashcard
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,30 +21,29 @@ class AddEditFlashCardViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _state: SnapshotStateList<AddFlashCardItemState> = mutableStateListOf(AddFlashCardItemState())
-    val state: SnapshotStateList<AddFlashCardItemState> = _state
+    private val _state: MutableState<AddFlashCardState> = mutableStateOf(AddFlashCardState())
+    val state: MutableState<AddFlashCardState> = _state
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private var currentFlashCardId: Int? = null
+    private var currentFlashCardId: Int = -1
     private var currentGroupId: Int? = null
 
     init {
         savedStateHandle.get<Int>("cardId")?.let { cardId ->
             Log.d("Add flashcard",cardId.toString())
             if(cardId != -1){
+                currentFlashCardId = cardId
                 viewModelScope.launch {
                     flashCardUseCases.getFlashCard(cardId)?.also {
-                        currentFlashCardId = it.cardId
-
-                        _state[0].flashCardQuestion.value = state[0].flashCardQuestion.value.copy(
-                            text = it.question,
-                            isHintVisible = false
-                        )
-                        _state[0].flashCardAnswer.value = state[0].flashCardAnswer.value.copy(
-                            text = it.answer,
-                            isHintVisible = false
+                        _state.value = state.value.copy(
+                            addFlashCards = listOf(AddFlashCardItemValues(
+                                flashCardQuestionText = it.question,
+                                isFlashCardQuestionVisible = false,
+                                flashCardAnswerText = it.answer,
+                                isFlashCardAnswerVisible = false
+                            ))
                         )
                     }
                 }
@@ -64,43 +63,79 @@ class AddEditFlashCardViewModel @Inject constructor(
     fun onEvent(event: AddEditFlashCardEvent){
         when(event){
             is AddEditFlashCardEvent.EnteredQuestion -> {
-                _state[event.id].flashCardQuestion.value = _state[event.id].flashCardQuestion.value.copy(
-                    text = event.value
+                _state.value = state.value.copy(
+                    addFlashCards = state.value.addFlashCards.mapIndexed { index, addFlashCardItem ->
+                        if (event.id == index) {
+                            addFlashCardItem.copy(flashCardQuestionText = event.value)
+                        } else {
+                            addFlashCardItem
+                        }
+                    }
                 )
             }
             is AddEditFlashCardEvent.ChangeQuestionFocus -> {
-                _state[event.id].flashCardQuestion.value = _state[event.id].flashCardQuestion.value.copy(
-                    isHintVisible = !event.focusState.isFocused && state[event.id].flashCardQuestion.value.text.isBlank()
+                _state.value = state.value.copy(
+                    addFlashCards = state.value.addFlashCards.mapIndexed { index, addFlashCardItem ->
+                        if (event.id == index) {
+                            addFlashCardItem.copy(isFlashCardQuestionVisible = !event.focusState.isFocused && addFlashCardItem.flashCardQuestionText.isBlank())
+                        } else {
+                            addFlashCardItem
+                        }
+                    }
                 )
             }
             is AddEditFlashCardEvent.EnteredAnswer -> {
-                _state[event.id].flashCardAnswer.value = _state[event.id].flashCardAnswer.value.copy(
-                    text = event.value
+                _state.value = state.value.copy(
+                    addFlashCards = state.value.addFlashCards.mapIndexed { index, addFlashCardItem ->
+                        if (event.id == index) {
+                            addFlashCardItem.copy(flashCardAnswerText = event.value)
+                        } else {
+                            addFlashCardItem
+                        }
+                    }
                 )
             }
             is AddEditFlashCardEvent.ChangeAnswerFocus -> {
-                _state[event.id].flashCardAnswer.value = _state[event.id].flashCardAnswer.value.copy(
-                    isHintVisible = !event.focusState.isFocused && state[event.id].flashCardAnswer.value.text.isBlank()
+
+                _state.value = state.value.copy(
+                    addFlashCards = state.value.addFlashCards.mapIndexed { index, addFlashCardItem ->
+                        if (event.id == index) {
+                            addFlashCardItem.copy(isFlashCardAnswerVisible = !event.focusState.isFocused && addFlashCardItem.flashCardAnswerText.isBlank())
+                        } else {
+                            addFlashCardItem
+                        }
+                    }
                 )
+
             }
             is AddEditFlashCardEvent.AddNewFlashCardItem -> {
-                _state.add(AddFlashCardItemState())
-                Log.d("Add-flashcard","Ilosc okienek" + state.size.toString())
+
+                _state.value = state.value.copy(
+                    addFlashCards = state.value.addFlashCards + AddFlashCardItemValues()
+                )
 
             }
             is AddEditFlashCardEvent.DeleteFlashCardItem -> {
-                _state.remove(event.item)
+                _state.value = state.value.copy(
+                    addFlashCards = state.value.addFlashCards - event.item
+                )
             }
             is AddEditFlashCardEvent.SaveFlashCard -> {
-                state.forEach {
-                    viewModelScope.launch {
+                viewModelScope.launch {
+                    var flashCardIndex: Int
+                    state.value.addFlashCards.forEachIndexed {index, it ->
                         try{
+                            flashCardIndex = -1
+                            if(index == 0){
+                                flashCardIndex = currentFlashCardId!!
+                            }
+
                             flashCardUseCases.addFlashCard(
                                 FlashCard(
-                                    cardId = currentFlashCardId,
+                                    cardId = flashCardIndex,
                                     groupId = currentGroupId,
-                                    question = it.flashCardQuestion.value.text,
-                                    answer = it.flashCardAnswer.value.text
+                                    question = it.flashCardQuestionText,
+                                    answer = it.flashCardAnswerText
                                 )
                             )
                             Log.d("Add flashcard", currentFlashCardId.toString())

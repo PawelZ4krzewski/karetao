@@ -16,14 +16,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.karetao.presentation.addeditflashcard.AddEditFlashCardEvent
 import com.example.karetao.presentation.addeditflashcard.AddEditFlashCardViewModel
-import com.example.karetao.presentation.addeditflashcard.FlashCardTextFieldState
+import com.example.karetao.presentation.addeditflashcard.AddFlashCardItemValues
+import com.example.karetao.presentation.addeditflashcard.AddFlashCardState
 import com.example.karetao.ui.theme.DarkBlue
 import com.example.karetao.ui.theme.White
 
 @Composable
 fun AddFlashCardItem(
-    questionState: FlashCardTextFieldState,
-    answerState: FlashCardTextFieldState,
+    addFlashCardItemValues: AddFlashCardItemValues,
     index: Int,
     onDeleteClick: () -> Unit,
     viewModel: AddEditFlashCardViewModel  = hiltViewModel()
@@ -63,15 +63,15 @@ fun AddFlashCardItem(
             }
 
             TransparentHintTextField(
-                text = questionState.text,
-                hint = questionState.hint,
+                text = addFlashCardItemValues.flashCardQuestionText,
+                hint = addFlashCardItemValues.flashCardQuestionHint,
                 onValueChange = {
                     viewModel.onEvent(AddEditFlashCardEvent.EnteredQuestion(it,index))
                 },
                 onFocusChange = {
                     viewModel.onEvent(AddEditFlashCardEvent.ChangeQuestionFocus(it,index))
                 },
-                isHintVisible = questionState.isHintVisible,
+                isHintVisible = addFlashCardItemValues.isFlashCardQuestionVisible,
                 singleLine = true,
                 textStyle = MaterialTheme.typography.h6
             )
@@ -94,15 +94,15 @@ fun AddFlashCardItem(
             Spacer(modifier = Modifier.height(20.dp))
 
             TransparentHintTextField(
-                text = answerState.text,
-                hint = answerState.hint,
+                text = addFlashCardItemValues.flashCardAnswerText,
+                hint = addFlashCardItemValues.flashCardAnswerHint,
                 onValueChange = {
                     viewModel.onEvent(AddEditFlashCardEvent.EnteredAnswer(it,index))
                 },
                 onFocusChange = {
                     viewModel.onEvent(AddEditFlashCardEvent.ChangeAnswerFocus(it,index))
                 },
-                isHintVisible = answerState.isHintVisible,
+                isHintVisible = addFlashCardItemValues.isFlashCardAnswerVisible,
                 singleLine = true,
                 textStyle = MaterialTheme.typography.h6
             )
