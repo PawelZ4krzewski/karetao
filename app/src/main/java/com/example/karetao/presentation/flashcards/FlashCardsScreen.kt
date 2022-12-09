@@ -169,9 +169,11 @@ fun FlashCardsScreen(
                             start = 16.dp,
                             end = 16.dp
                         ),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
                 ){
                     items(state.flashCards){ flashCard: FlashCard ->
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
                         FlashCardItem(
                             flashCard = flashCard,
                             modifier = Modifier

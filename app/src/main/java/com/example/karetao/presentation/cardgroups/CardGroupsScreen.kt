@@ -135,10 +135,11 @@ fun CardGroupsScreen(
                         start = 16.dp,
                         end = 16.dp
                     ),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ){
 
                     items(state.cardGroupsInformation){ cardGroupInformation: CardGroupInformation ->
+
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         CardGroupItem(
                             cardGroupInformation = cardGroupInformation,
