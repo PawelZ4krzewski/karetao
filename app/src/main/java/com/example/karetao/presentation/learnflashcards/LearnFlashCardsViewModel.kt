@@ -43,11 +43,7 @@ class LearnFlashCardsViewModel @Inject constructor(
 
     private var getFlashCardsJob: Job? = null
 
-    private var currentStatus: Int? = null
 
-    private var currentUserCard: UserCard? = null
-
-    private var existedUserCard: UserCard? = null
 
     init {
         savedStateHandle.get<Int>("groupId")?.let { groupId ->
@@ -70,6 +66,9 @@ class LearnFlashCardsViewModel @Inject constructor(
     fun onEvent(event: LearnFlashCardEvent){
         when(event){
             is LearnFlashCardEvent.SaveUserCard -> {
+
+                val currentUserCard: UserCard
+
                 Log.d("Learn-FlashCard","${event.flashCard}  ${event.isCorrect}")
 
                 if(event.isCorrect){
@@ -85,29 +84,29 @@ class LearnFlashCardsViewModel @Inject constructor(
                     )
                 }
 
-                try{
-                    existedUserCard = state.value.userCard.filter { it.cardId == event.flashCard.cardId && it.username == state.value.username}[0]
-                }catch(e: Exception){
-                    Log.d("Learn-FlashCard","UserCard doesn't exist yet. Official Error: " + e.toString())
-                }
+
+                val existedUserCard: UserCard? = state.value.userCard.filter{ it.cardId == event.flashCard.cardId && it.username == state.value.username}.firstOrNull()
 
                 if(existedUserCard != null){
+
+                    val currentStatus: Int
+
                     Log.d("Learn-FlashCard","Edit Existing Card")
                     if(event.isCorrect){
-                        currentStatus = maxOf(existedUserCard!!.status -1, 0)
+                        currentStatus = maxOf(existedUserCard.status -1, 0)
                     }
                     else{
-                        currentStatus = minOf(existedUserCard!!.status + 1, 5)
+                        currentStatus = minOf(existedUserCard.status + 1, 5)
                     }
 
                     currentUserCard = UserCard(
-                        existedUserCard!!.username,
-                        existedUserCard!!.cardId,
-                        existedUserCard!!.status
+                        existedUserCard.username,
+                        existedUserCard.cardId,
+                        currentStatus
                     )
-
+                    Log.d("Learn-FlashCard", "Change card with new status: $currentStatus | ${existedUserCard.cardId} ${existedUserCard.username}")
                 } else {
-                    Log.d("Learn-FlashCard","Create New Card")
+                    Log.d("Learn-FlashCard","Create New Card ${event.flashCard.cardId} state.value.username 5")
                     currentUserCard = UserCard(
                         cardId = event.flashCard.cardId!!,
                         username = state.value.username,
@@ -119,7 +118,7 @@ class LearnFlashCardsViewModel @Inject constructor(
 
                     try{
                         userCardUseCase.insertUserCard(
-                            currentUserCard!!
+                            currentUserCard
                         )
 
                         _eventFlow.emit(UiEvent.SaveUserCard)
@@ -130,7 +129,6 @@ class LearnFlashCardsViewModel @Inject constructor(
                             )
                         )
                     }
-                    currentUserCard = null
                 }
             }
             is LearnFlashCardEvent.LearnAgain -> {

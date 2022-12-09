@@ -27,7 +27,7 @@ class AddEditFlashCardViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private var currentFlashCardId: Int = -1
+    private var currentFlashCardId: Int? = null
     private var currentGroupId: Int? = null
 
     init {
@@ -122,12 +122,12 @@ class AddEditFlashCardViewModel @Inject constructor(
             }
             is AddEditFlashCardEvent.SaveFlashCard -> {
                 viewModelScope.launch {
-                    var flashCardIndex: Int
+                    var flashCardIndex: Int?
                     state.value.addFlashCards.forEachIndexed {index, it ->
                         try{
-                            flashCardIndex = -1
+                            flashCardIndex = null
                             if(index == 0){
-                                flashCardIndex = currentFlashCardId!!
+                                flashCardIndex = currentFlashCardId
                             }
 
                             flashCardUseCases.addFlashCard(
