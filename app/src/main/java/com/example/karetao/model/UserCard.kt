@@ -11,10 +11,9 @@ import java.time.ZoneOffset
 import java.util.*
 
 @Entity(tableName = "userCard", primaryKeys = ["username", "cardId"])
-@RequiresApi(Build.VERSION_CODES.O)
 data class UserCard constructor(
     val username: String,
     val cardId: Int,
     val status: Int,
-    val lastEdit: Long? = System.currentTimeMillis()
+    val lastEdit: Long
 )

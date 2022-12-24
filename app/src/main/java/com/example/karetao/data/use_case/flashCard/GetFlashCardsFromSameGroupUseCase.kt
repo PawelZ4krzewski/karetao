@@ -1,6 +1,6 @@
 package com.example.karetao.data.use_case.flashCard
 
-import com.example.karetao.data.repository.FlashCardRepository
+import com.example.karetao.data.repositoryinterface.FlashCardRepository
 import com.example.karetao.data.use_case.OrderType
 import com.example.karetao.model.FlashCard
 import kotlinx.coroutines.flow.Flow

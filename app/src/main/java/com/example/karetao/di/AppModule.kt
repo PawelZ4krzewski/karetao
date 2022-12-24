@@ -6,12 +6,6 @@ import com.example.karetao.data.DAO.CardGroupDao
 import com.example.karetao.data.DAO.FlashCardDao
 import com.example.karetao.data.DAO.UserCardDao
 import com.example.karetao.data.database.AppDatabase
-import com.example.karetao.data.repository.CardGroupRepository
-import com.example.karetao.data.repository.FlashCardRepository
-import com.example.karetao.data.repository.UserCardRepository
-import com.example.karetao.data.use_case.cardGroup.*
-import com.example.karetao.data.use_case.flashCard.*
-import com.example.karetao.data.use_case.userCard.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

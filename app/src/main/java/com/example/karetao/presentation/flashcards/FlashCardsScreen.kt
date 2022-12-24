@@ -2,7 +2,6 @@ package com.example.karetao.presentation.flashcards
 
 import OrderSection
 import android.annotation.SuppressLint
-import android.content.ClipData
 import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
@@ -18,23 +17,18 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.karetao.model.FlashCard
-import com.example.karetao.presentation.cardgroups.CardGroupEvent
 import com.example.karetao.presentation.flashcards.components.FlashCardItem
 import com.example.karetao.presentation.util.Screen
-import com.example.karetao.ui.theme.Blue
 import com.example.karetao.ui.theme.DarkBlue
 import com.example.karetao.ui.theme.White
 import kotlinx.coroutines.launch
-import org.intellij.lang.annotations.JdkConstants
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalAnimationApi

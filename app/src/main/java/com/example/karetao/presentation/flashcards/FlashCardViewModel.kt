@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.karetao.data.use_case.OrderType
 import com.example.karetao.data.use_case.flashCard.FlashCardOrderType
 import com.example.karetao.data.use_case.flashCard.FlashCardUseCases
-import com.example.karetao.data.use_case.OrderType
 import com.example.karetao.model.FlashCard
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job

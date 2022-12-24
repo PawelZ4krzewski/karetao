@@ -1,6 +1,6 @@
 package com.example.karetao.data.use_case.userCard
 
-import com.example.karetao.data.repository.UserCardRepository
+import com.example.karetao.data.repository.UserCardRepositoryImpl
 import com.example.karetao.data.use_case.OrderType
 import com.example.karetao.model.UserCard
 import kotlinx.coroutines.flow.Flow
@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetUserCardFromSameUserUseCase @Inject constructor(
-    private val repository: UserCardRepository
+    private val repository: UserCardRepositoryImpl
 ) {
     operator fun invoke(
         username: String,

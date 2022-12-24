@@ -23,6 +23,9 @@ interface FlashCardDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFlashCards(flashCard: FlashCard)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMultipleFlashCards(flashCards: List<FlashCard>)
+
     @Delete
     suspend fun deleteFlashCards(flashCard: FlashCard)
 }

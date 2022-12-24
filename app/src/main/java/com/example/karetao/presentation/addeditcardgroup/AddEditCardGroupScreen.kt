@@ -36,8 +36,6 @@ fun AddEditCardGroupScreen(
 
     val scaffoldState = rememberScaffoldState()
 
-    val scope = rememberCoroutineScope()
-
     LaunchedEffect(key1 = true){
         viewModel.eventFlow.collectLatest { event ->
             when(event){
@@ -200,8 +198,6 @@ fun AddEditCardGroupScreen(
                     }
                 }
             }
-
         }
     }
-
 }

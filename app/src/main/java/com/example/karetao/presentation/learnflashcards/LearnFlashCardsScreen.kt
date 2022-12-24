@@ -1,10 +1,11 @@
 package com.example.karetao.presentation.learnflashcards
 
 import android.annotation.SuppressLint
+import android.opengl.Visibility
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -73,6 +75,7 @@ fun LearnFlashCardsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(DarkBlue)
+                        .background(DarkBlue)
                         .padding(10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -89,7 +92,9 @@ fun LearnFlashCardsScreen(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back",
                             tint = White,
-                            modifier = Modifier.size(30.dp).offset((-30).dp)
+                            modifier = Modifier
+                                .size(30.dp)
+                                .offset((-30).dp)
                         )
                     }
                     Row(modifier = Modifier
@@ -132,6 +137,7 @@ fun LearnFlashCardsScreen(
 
             Box(
                 Modifier
+//                    .background(Color.Blue, RoundedCornerShape(40.dp))
                     .padding(20.dp)
                     .fillMaxSize()
                     .align(Alignment.CenterHorizontally)
@@ -147,6 +153,7 @@ fun LearnFlashCardsScreen(
                             cardFace = cardFace,
                             onClick = { cardFace = cardFace.next },
                             modifier = Modifier
+//                                .background(Color.Red, RoundedCornerShape(40.dp))
                                 .fillMaxWidth()
                                 .fillMaxHeight(0.8f)
                                 .swipableCard(
@@ -181,7 +188,9 @@ fun LearnFlashCardsScreen(
                                 ),
                             front = {
                                 Box(
-                                    modifier = Modifier.fillMaxSize(),
+                                    modifier = Modifier
+//                                        .background(Color.Green, RoundedCornerShape(40.dp))
+                                        .fillMaxSize(),
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Text(
@@ -192,7 +201,9 @@ fun LearnFlashCardsScreen(
                             },
                             back = {
                                 Box(
-                                    modifier = Modifier.fillMaxSize(),
+                                    modifier = Modifier
+//                                        .background(Color.Yellow, RoundedCornerShape(40.dp))
+                                        .fillMaxSize(),
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Text(
@@ -256,6 +267,7 @@ fun FlipCard(
     Card(
         onClick = { onClick(cardFace) },
         modifier = modifier
+//            .background(Color.Magenta, RoundedCornerShape(40.dp))
             .graphicsLayer {
                 if (axis == RotationAxis.AxisX) {
                     rotationX = rotation.value
@@ -267,7 +279,8 @@ fun FlipCard(
     ) {
         if (rotation.value <= 90f) {
             Box(
-                Modifier.fillMaxSize()
+                Modifier
+                    .fillMaxSize()
             ) {
                 front()
             }
@@ -289,7 +302,39 @@ fun FlipCard(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+@Preview
+@Composable
+fun WritingFlashCard(
+//    modifier: Modifier
+){
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+                text = "CORRECT!",
+                style = MaterialTheme.typography.h3
+            )
+
+        Text(
+            text = "Question",
+            style = MaterialTheme.typography.h3
+        )
+        AnimatedVisibility(
+            visible = true,
+            enter = fadeIn() + slideInVertically(),
+            exit = fadeOut() + slideOutVertically()
+        ){
+            Text(
+                text = "Answer",
+                style = MaterialTheme.typography.h3
+            )
+        }
+
+
+    }
+}
+
+
 @Composable
 fun FinishDialog(
     dialogState: Boolean,
@@ -416,7 +461,6 @@ fun FinishDialog(
                             color = White
                         )
                     }
-
                 }
             },
             properties =  DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),

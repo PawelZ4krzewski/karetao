@@ -1,8 +1,6 @@
 package com.example.karetao.presentation.learnflashcards
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -10,10 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.karetao.data.use_case.OrderType
 import com.example.karetao.data.use_case.flashCard.FlashCardOrderType
-import com.example.karetao.data.use_case.flashCard.FlashCardUseCases
 import com.example.karetao.data.use_case.flashCard.GetFlashCardsFromSameGroupUseCase
 import com.example.karetao.data.use_case.userCard.UserCardOrderType
 import com.example.karetao.data.use_case.userCard.UserCardUseCases
+import com.example.karetao.model.FlashCard
 import com.example.karetao.model.InvalidFlashCardException
 import com.example.karetao.model.UserCard
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +21,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -62,77 +59,17 @@ class LearnFlashCardsViewModel @Inject constructor(
 
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun onEvent(event: LearnFlashCardEvent){
         when(event){
             is LearnFlashCardEvent.SaveUserCard -> {
 
-                val currentUserCard: UserCard
+                checkAnswerIsCorrect(event.flashCard, event.isCorrect)
 
-                Log.d("Learn-FlashCard","${event.flashCard}  ${event.isCorrect}")
+                updateUserFlashCards(event.flashCard, event.isCorrect)
 
-                if(event.isCorrect){
-                    _state.value = state.value.copy(
-                        learnedFlashCard = state.value.learnedFlashCard + listOf(event.flashCard),
-                        learningFlashCardSet = state.value.learningFlashCardSet - event.flashCard
-                    )
-                }
-                else{
-                    _state.value = state.value.copy(
-                        repeatedFlashCard = state.value.repeatedFlashCard + listOf(event.flashCard),
-                        learningFlashCardSet = state.value.learningFlashCardSet - event.flashCard
-                    )
-                }
-
-
-                val existedUserCard: UserCard? = state.value.userCard.filter{ it.cardId == event.flashCard.cardId && it.username == state.value.username}.firstOrNull()
-
-                if(existedUserCard != null){
-
-                    val currentStatus: Int
-
-                    Log.d("Learn-FlashCard","Edit Existing Card")
-                    if(event.isCorrect){
-                        currentStatus = maxOf(existedUserCard.status -1, 0)
-                    }
-                    else{
-                        currentStatus = minOf(existedUserCard.status + 1, 5)
-                    }
-
-                    currentUserCard = UserCard(
-                        existedUserCard.username,
-                        existedUserCard.cardId,
-                        currentStatus
-                    )
-                    Log.d("Learn-FlashCard", "Change card with new status: $currentStatus | ${existedUserCard.cardId} ${existedUserCard.username}")
-                } else {
-                    Log.d("Learn-FlashCard","Create New Card ${event.flashCard.cardId} state.value.username 5")
-                    currentUserCard = UserCard(
-                        cardId = event.flashCard.cardId!!,
-                        username = state.value.username,
-                        status = 5
-                    )
-                }
-
-                viewModelScope.launch {
-
-                    try{
-                        userCardUseCase.insertUserCard(
-                            currentUserCard
-                        )
-
-                        _eventFlow.emit(UiEvent.SaveUserCard)
-                    }catch(e: InvalidFlashCardException){
-                        _eventFlow.emit(
-                            UiEvent.ShowSnackbar(
-                                message = e.message ?: "Coulnd't save UserCard"
-                            )
-                        )
-                    }
-                }
             }
             is LearnFlashCardEvent.LearnAgain -> {
-                if(event.everyFlashcards){
+                if(event.isEveryFlashcards){
                     _state.value = state.value.copy(
                         learningFlashCardSet = state.value.flashCards,
                         learnedFlashCard = emptyList(),
@@ -149,6 +86,8 @@ class LearnFlashCardsViewModel @Inject constructor(
             }
         }
     }
+
+
 
 
     private fun getFlashCardsFromSameGroup(userCardOrderType: UserCardOrderType, username:String, ){
@@ -178,7 +117,76 @@ class LearnFlashCardsViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+    private fun checkAnswerIsCorrect(flashCard: FlashCard, isCorrect: Boolean) {
+        Log.d("Learn-FlashCard","${flashCard}  ${isCorrect}")
 
+        if(isCorrect){
+            _state.value = state.value.copy(
+                learnedFlashCard = state.value.learnedFlashCard + listOf(flashCard),
+                learningFlashCardSet = state.value.learningFlashCardSet - flashCard
+            )
+        }
+        else{
+            _state.value = state.value.copy(
+                repeatedFlashCard = state.value.repeatedFlashCard + listOf(flashCard),
+                learningFlashCardSet = state.value.learningFlashCardSet - flashCard
+            )
+        }
+    }
+
+    private fun updateUserFlashCards(flashCard: FlashCard, isCorrect: Boolean){
+
+        val currentUserCard: UserCard
+        val existedUserCard: UserCard? =
+            state.value.userCard.firstOrNull { it.cardId == flashCard.cardId && it.username == state.value.username }
+
+        if(existedUserCard != null){
+
+            val currentStatus: Int
+
+
+            Log.d("Learn-FlashCard","Edit Existing Card")
+            if(isCorrect){
+                currentStatus = maxOf(existedUserCard.status -1, 0)
+            }
+            else{
+                currentStatus = minOf(existedUserCard.status + 1, 5)
+            }
+
+            currentUserCard = UserCard(
+                existedUserCard.username,
+                existedUserCard.cardId,
+                currentStatus,
+                System.currentTimeMillis()
+            )
+            Log.d("Learn-FlashCard", "Change card with new status: $currentStatus | ${existedUserCard.cardId} ${existedUserCard.username}")
+        } else {
+            Log.d("Learn-FlashCard","Create New Card ${flashCard.cardId} state.value.username 5")
+            currentUserCard = UserCard(
+                cardId = flashCard.cardId!!,
+                username = state.value.username,
+                status = 5,
+                lastEdit = System.currentTimeMillis()
+            )
+        }
+
+        viewModelScope.launch {
+
+            try{
+                userCardUseCase.insertUserCard(
+                    currentUserCard
+                )
+
+                _eventFlow.emit(UiEvent.SaveUserCard)
+            }catch(e: InvalidFlashCardException){
+                _eventFlow.emit(
+                    UiEvent.ShowSnackbar(
+                        message = e.message ?: "Coulnd't save UserCard"
+                    )
+                )
+            }
+        }
+    }
 
     sealed class UiEvent{
         data class ShowSnackbar(val message: String): UiEvent()

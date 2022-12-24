@@ -17,7 +17,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.karetao.presentation.addeditflashcard.AddEditFlashCardEvent
 import com.example.karetao.presentation.addeditflashcard.AddEditFlashCardViewModel
 import com.example.karetao.presentation.addeditflashcard.AddFlashCardItemValues
-import com.example.karetao.presentation.addeditflashcard.AddFlashCardState
 import com.example.karetao.ui.theme.DarkBlue
 import com.example.karetao.ui.theme.White
 
