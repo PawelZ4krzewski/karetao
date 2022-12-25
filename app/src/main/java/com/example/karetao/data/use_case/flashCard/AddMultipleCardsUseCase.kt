@@ -1,12 +1,13 @@
 package com.example.karetao.data.use_case.flashCard
 
 import com.example.karetao.data.repository.FlashCardRepositoryImpl
+import com.example.karetao.data.repositoryinterface.FlashCardRepository
 import com.example.karetao.model.FlashCard
 import com.example.karetao.model.InvalidFlashCardException
 import javax.inject.Inject
 
 class AddMultipleCardsUseCase @Inject constructor(
-    private val repository: FlashCardRepositoryImpl
+    private val repository: FlashCardRepository
 ) {
     @Throws(InvalidFlashCardException::class)
     suspend operator fun invoke(flashCards: List<FlashCard>){
