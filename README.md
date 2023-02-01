@@ -1,7 +1,7 @@
 # Karetao
 
 ------------------
-Make your learning sessions easier using Karetao flashcard app. Create your own folders with flashcars and learn everytime and everywhere  you want.
+Make your learning sessions easier using Karetao flashcard app. Create your own folders with flashcards and learn everytime and everywhere  you want.
 
 
 ### Karetao functions:
