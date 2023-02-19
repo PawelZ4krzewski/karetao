@@ -26,6 +26,7 @@ object AppModule {
         ).build()
     }
 
+
     @Provides
     @Singleton
     fun provideCardGroupDao(db: AppDatabase): CardGroupDao{
