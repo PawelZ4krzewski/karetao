@@ -114,6 +114,12 @@ class AddEditFlashCardViewModel @Inject constructor(
                     addFlashCards = state.value.addFlashCards + AddFlashCardItemValues()
                 )
 
+                var number: Int? = null
+
+                number?.let {
+                    number = it + 1
+                }
+
             }
             is AddEditFlashCardEvent.DeleteFlashCardItem -> {
                 _state.value = state.value.copy(
@@ -153,8 +159,12 @@ class AddEditFlashCardViewModel @Inject constructor(
         }
     }
 
+
+
+
     sealed class UiEvent{
         data class ShowSnackbar(val message: String): UiEvent()
         object SaveFlashCard: UiEvent()
     }
 }
+

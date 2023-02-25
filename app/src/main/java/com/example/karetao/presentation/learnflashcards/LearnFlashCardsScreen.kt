@@ -50,10 +50,9 @@ fun LearnFlashCardsScreen(
     viewModel: LearnFlashCardsViewModel = hiltViewModel()
 ){
     val state = viewModel.state.value
+    var dialogState = state.learningFlashCardSet.isEmpty() && (state.learnedFlashCard.isNotEmpty() || state.repeatedFlashCard.isNotEmpty())
     val scaffoldState = rememberScaffoldState()
     val backgroundColor = Gray
-
-    var dialogState = state.learningFlashCardSet.isEmpty()
 
     val states = state.learningFlashCardSet.reversed()
         .map { it to rememberSwipeableCardState() }
